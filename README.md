@@ -17,9 +17,10 @@ Creates a Manhattan plot directly from a PLINK assoc output (or any data frame w
 
 #### Usage
 ```
-fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = TRUE, col="matlab", maxP, sortchr=TRUE, bybp=FALSE,
-        chrsubset, bprange, highlight, annotateHighlight=FALSE, annotatePval, annotateTop=TRUE, annotationWinMb, annotateN,
-        annotationCol, annotationAngle=45, suggestiveline, genomewideline, cex=0.4, cex.axis=0.6, xlab, ylab, xlim, ylim, ...)
+fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = TRUE, col="matlab", maxP, sortchr=TRUE,
+        bybp=FALSE, chrsubset, bprange, highlight, annotateHighlight=FALSE, annotatePval, annotateTop=TRUE, annotationWinMb,
+        annotateN, annotationCol, annotationAngle=45, suggestiveline, genomewideline, cex=0.4, cex.axis=0.6,
+        xlab, ylab, xlim, ylim, ...)
 ```
 
 #### Parameters:
@@ -83,3 +84,23 @@ fastqq (p, speedup=TRUE, lambda=TRUE, fix_zero=TRUE, cex=0.6, cex.axis=0.9, xlab
 
 ## Examples
 
+The **fastman** package includes functions for creating Manhattan plots and Q-Q plots from GWAS results. Let us first try using the package on a regular PLINK assoc output file.
+```
+m=read.delim("kd2_only_dz.10.a.assoc.linear",header=TRUE,stringsAsFactors=FALSE,sep=" ");
+```
+This dataset has results for 1,222,628 SNPs on chromosomes. Let us take a look at the data.
+```
+str(m)
+```
+```
+data.frame':	1222628 obs. of  9 variables:
+ $ CHR   : int  1 1 1 1 1 1 1 1 1 1 ...
+ $ SNP   : chr  "rs3094315" "rs3094315" "rs3131972" "rs3131972" ...
+ $ BP    : int  752566 752566 752721 752721 776546 776546 798959 798959 800007 800007 ...
+ $ allele: int  1 3 1 3 1 3 1 3 1 3 ...
+ $ afreq : num  0.785 0.215 0.237 0.763 0.959 0.041 0.366 0.634 0.025 0.975 ...
+ $ fams  : int  19 19 22 22 5 5 27 27 4 4 ...
+ $ beta  : num  2.87 -2.87 -4.77 4.77 -0.9 ...
+ $ Z     : num  1.115 -1.115 -1.715 1.715 -0.706 ...
+ $ P     : num  0.265 0.265 0.0864 0.0864 0.4802 ...
+```
