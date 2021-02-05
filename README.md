@@ -85,10 +85,12 @@ fastqq (p, speedup=TRUE, lambda=TRUE, fix_zero=TRUE, cex=0.6, cex.axis=0.9, xlab
 ## Examples
 
 The **fastman** package includes functions for creating Manhattan plots and Q-Q plots from GWAS results. Let us first try using the package on a regular PLINK assoc output file.
+
+### Reading a regular PLINK assoc output dataset
 ```
-m=read.delim("kd2_only_dz.10.a.assoc.linear",header=TRUE,stringsAsFactors=FALSE,sep=" ");
+m=read.delim("kd2_only_dz.10.a.assoc.linear",header=TRUE,stringsAsFactors=FALSE,sep=" ")
 ```
-This dataset has results for 1,222,628 SNPs on chromosomes. Let us take a look at the data.
+This dataset has results for 1,222,628 SNPs on 23 chromosomes. Let us take a look at the data.
 ```
 str(m)
 ```
@@ -104,3 +106,120 @@ data.frame':	1222628 obs. of  9 variables:
  $ Z     : num  1.115 -1.115 -1.715 1.715 -0.706 ...
  $ P     : num  0.265 0.265 0.0864 0.0864 0.4802 ...
 ```
+```
+head(m)
+```
+```
+  CHR        SNP     BP allele afreq fams   beta      Z        P
+1   1  rs3094315 752566      1 0.785   19  2.867  1.115 0.264981
+2   1  rs3094315 752566      3 0.215   19 -2.867 -1.115 0.264981
+3   1  rs3131972 752721      1 0.237   22 -4.767 -1.715 0.086419
+4   1  rs3131972 752721      3 0.763   22  4.767  1.715 0.086419
+5   1 rs12124819 776546      1 0.959    5 -0.900 -0.706 0.480177
+6   1 rs12124819 776546      3 0.041    5  0.900  0.706 0.480177
+```
+```
+tail(m)
+```
+```
+        CHR       SNP        BP allele afreq fams   beta      Z        P
+1222623  23 rs5940540 154833182      1 0.954    5  0.307  0.309 0.757520
+1222624  23 rs5940540 154833182      3 0.046    5 -0.307 -0.309 0.757520
+1222625  23  rs553678 154892230      1 0.261   16 -4.372 -2.081 0.037399
+1222626  23  rs553678 154892230      3 0.739   16  4.372  2.081 0.037399
+1222627  23  rs669237 154916845      1 0.261   16 -3.910 -1.893 0.058363
+1222628  23  rs669237 154916845      2 0.739   16  3.910  1.893 0.058363
+```
+Let us see the distribution of SNPs across chromosomes.
+```
+as.data.frame(table(m$CHR))
+```
+```
+   Var1  Freq
+1     1 98286
+2     2 97472
+3     3 80762
+4     4 69960
+5     5 71526
+6     6 81240
+7     7 65046
+8     8 64048
+9     9 57040
+10   10 66356
+11   11 61970
+12   12 60638
+13   13 46970
+14   14 39746
+15   15 37068
+16   16 37952
+17   17 33426
+18   18 36380
+19   19 24388
+20   20 31024
+21   21 17676
+22   22 17392
+23   23 26262
+```
+### Creating Manhattan Plots
+From the above dataset, lets generate a basic Manhattan plot.
+```
+png("md1.png", width=10, height=6, units="in", res=300)
+fastman(m)
+dev.off()
+```
+
+![](https://github.com/kaustubhad/fastman/blob/main/md1.png)
+
+We can change some basic graph parameters. Let us increase the y-axis limit (```ylim=```) to 8, reduce the point size (```cex=```) to 30% and reduce the font size of the axis labels (```cex.axis=```) to 40%. We can also change the colour palette (```col=```) and remove the suggestive (```suggestiveline=```) and genome-wide (```genomewideline=```) significance lines.
+```
+png("md2.png", width=10, height=6, units="in", res=300)
+fastman(m, ylim = c(0,8), cex = 0.3, cex.axis = 0.4, col = "rainbow1", suggestiveline = FALSE, genomewideline = FALSE)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md2.png)
+
+We can now look into the SNPs of a single chromosome.
+```
+png("md3.png", width=10, height=6, units="in", res=300)
+fastman(m, chrsubset=1)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md3.png)
+
+Let us say we are interested in highlighting some particular 1000 SNPs in chromosome 1. We have the name of the required SNPs in a character vector called snp1.
+```
+str(snp1)
+```
+```
+chr [1:1000] "rs3094315" "rs3094315" "rs3131972" "rs3131972" "rs12124819" ...
+```
+```
+png("md4.png", width=10, height=6, units="in", res=300)
+fastman(m, highlight = snp1)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md4.png)
+
+We can annotate SNPs based on their p-value. By default, among the SNPs that exceed the provided threshold, only the top SNP in every chromosome is annotated.
+```
+png("md5.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-3)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md5.png)
+
+We can override the default rule, and annotate all the SNPs beyond our specified threshold.
+```
+png("md6.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-3, annotateTop = FALSE)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md6.png)
+
+We can annotate among highlighted SNPs as well. By default, only the top SNP in every chromosome will be highlighted.
+```
+png("md7.png", width=10, height=6, units="in", res=300)
+fastman(m, highlight = snp1, annotateHighlight = TRUE)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md7.png)
