@@ -84,81 +84,51 @@ fastqq (p, speedup=TRUE, lambda=TRUE, fix_zero=TRUE, cex=0.6, cex.axis=0.9, xlab
 
 ## Examples
 
-The **fastman** package includes functions for creating Manhattan plots and Q-Q plots from GWAS results. Let us first try using the package on a regular PLINK assoc output file.
+The **fastman** package includes functions for creating Manhattan plots and Q-Q plots from GWAS results. Let us first try using the package on a regular PLINK assoc output file. This is a GWAS summary statistics output file from a study by the authors (https://doi.org/10.1038/ncomms10815), available from the GWAS Central repository ( https://www.gwascentral.org/study/HGVST2597)
 
 ### Reading a regular PLINK assoc output dataset
 ```
-m=read.delim("kd2_only_dz.10.a.assoc.linear",header=TRUE,stringsAsFactors=FALSE,sep=" ")
+m=read.table("beard.assoc.linear",header=TRUE,stringsAsFactors=FALSE,sep="\t")
 ```
-This dataset has results for 1,222,628 SNPs on 23 chromosomes. Let us take a look at the data.
+This dataset has results for 8,776,423 SNPs on 22 chromosomes. Let us take a look at the data.
 ```
 str(m)
 ```
 ```
-data.frame':	1222628 obs. of  9 variables:
- $ CHR   : int  1 1 1 1 1 1 1 1 1 1 ...
- $ SNP   : chr  "rs3094315" "rs3094315" "rs3131972" "rs3131972" ...
- $ BP    : int  752566 752566 752721 752721 776546 776546 798959 798959 800007 800007 ...
- $ allele: int  1 3 1 3 1 3 1 3 1 3 ...
- $ afreq : num  0.785 0.215 0.237 0.763 0.959 0.041 0.366 0.634 0.025 0.975 ...
- $ fams  : int  19 19 22 22 5 5 27 27 4 4 ...
- $ beta  : num  2.87 -2.87 -4.77 4.77 -0.9 ...
- $ Z     : num  1.115 -1.115 -1.715 1.715 -0.706 ...
- $ P     : num  0.265 0.265 0.0864 0.0864 0.4802 ...
+'data.frame':	8776423 obs. of  9 variables:
+ $ CHR  : chr  "1" "1" "1" "1" ...
+ $ SNP  : chr  "rs58108140" "rs180734498" "rs116400033" "rs62637813" ...
+ $ BP   : chr  "10583" "13302" "51479" "52058" ...
+ $ A1   : chr  "A" "T" "A" "C" ...
+ $ TEST : chr  "ADD" "ADD" "ADD" "ADD" ...
+ $ NMISS: chr  "1551" "1911" "1552" "2348" ...
+ $ BETA : chr  "0.1486" "0.07006" "0.02572" "0.1391" ...
+ $ STAT : chr  "1.793" "0.7667" "0.3814" "2.035" ...
+ $ P    : chr  "0.07314" "0.4433" "0.703" "0.04199" ...
 ```
 ```
 head(m)
 ```
 ```
-  CHR        SNP     BP allele afreq fams   beta      Z        P
-1   1  rs3094315 752566      1 0.785   19  2.867  1.115 0.264981
-2   1  rs3094315 752566      3 0.215   19 -2.867 -1.115 0.264981
-3   1  rs3131972 752721      1 0.237   22 -4.767 -1.715 0.086419
-4   1  rs3131972 752721      3 0.763   22  4.767  1.715 0.086419
-5   1 rs12124819 776546      1 0.959    5 -0.900 -0.706 0.480177
-6   1 rs12124819 776546      3 0.041    5  0.900  0.706 0.480177
+  CHR         SNP    BP A1 TEST NMISS      BETA     STAT       P
+1   1  rs58108140 10583  A  ADD  1551    0.1486    1.793 0.07314
+2   1 rs180734498 13302  T  ADD  1911   0.07006   0.7667  0.4433
+3   1 rs116400033 51479  A  ADD  1552   0.02572   0.3814   0.703
+4   1  rs62637813 52058  C  ADD  2348    0.1391    2.035 0.04199
+5   1 rs201374420 52185  T  ADD  2421 -0.004824 -0.04033  0.9678
+6   1 rs150021059 52238  T  ADD  2290   -0.1036  -0.8664  0.3864
 ```
 ```
 tail(m)
 ```
 ```
-        CHR       SNP        BP allele afreq fams   beta      Z        P
-1222623  23 rs5940540 154833182      1 0.954    5  0.307  0.309 0.757520
-1222624  23 rs5940540 154833182      3 0.046    5 -0.307 -0.309 0.757520
-1222625  23  rs553678 154892230      1 0.261   16 -4.372 -2.081 0.037399
-1222626  23  rs553678 154892230      3 0.739   16  4.372  2.081 0.037399
-1222627  23  rs669237 154916845      1 0.261   16 -3.910 -1.893 0.058363
-1222628  23  rs669237 154916845      2 0.739   16  3.910  1.893 0.058363
-```
-Let us see the distribution of SNPs across chromosomes.
-```
-as.data.frame(table(m$CHR))
-```
-```
-   Var1  Freq
-1     1 98286
-2     2 97472
-3     3 80762
-4     4 69960
-5     5 71526
-6     6 81240
-7     7 65046
-8     8 64048
-9     9 57040
-10   10 66356
-11   11 61970
-12   12 60638
-13   13 46970
-14   14 39746
-15   15 37068
-16   16 37952
-17   17 33426
-18   18 36380
-19   19 24388
-20   20 31024
-21   21 17676
-22   22 17392
-23   23 26262
+        CHR         SNP       BP A1 TEST NMISS      BETA    STAT      P
+8776418  22 rs144549712 51229855  A  ADD  2206   0.02949  0.5249 0.5997
+8776419  22  rs62240042 51233300  T  ADD  1536 -0.009488 -0.2751 0.7833
+8776420  22 rs200507571 51236013 AT  ADD  1847  0.003518 0.08454 0.9326
+8776421  22   rs3896457 51237063  C  ADD  1802   -0.0187 -0.5628 0.5737
+8776422  22 rs149733995 51238249  C  ADD  2268   0.06418  0.9966  0.319
+8776423  22 rs181833046 51243297  T  ADD  2250    0.1005   1.066 0.2866
 ```
 ### Creating Manhattan Plots
 From the above dataset, lets generate a basic Manhattan plot.
