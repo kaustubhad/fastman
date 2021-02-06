@@ -96,39 +96,39 @@ str(m)
 ```
 ```
 'data.frame':	8776423 obs. of  9 variables:
- $ CHR  : chr  "1" "1" "1" "1" ...
+ $ CHR  : num  1 1 1 1 1 1 1 1 1 1 ...
  $ SNP  : chr  "rs58108140" "rs180734498" "rs116400033" "rs62637813" ...
- $ BP   : chr  "10583" "13302" "51479" "52058" ...
+ $ BP   : num  10583 13302 51479 52058 52185 ...
  $ A1   : chr  "A" "T" "A" "C" ...
  $ TEST : chr  "ADD" "ADD" "ADD" "ADD" ...
- $ NMISS: chr  "1551" "1911" "1552" "2348" ...
- $ BETA : chr  "0.1486" "0.07006" "0.02572" "0.1391" ...
- $ STAT : chr  "1.793" "0.7667" "0.3814" "2.035" ...
- $ P    : chr  "0.07314" "0.4433" "0.703" "0.04199" ...
+ $ NMISS: num  1551 1911 1552 2348 2421 ...
+ $ BETA : num  0.1486 0.07006 0.02572 0.1391 -0.00482 ...
+ $ STAT : num  1.793 0.7667 0.3814 2.035 -0.0403 ...
+ $ P    : num  0.0731 0.4433 0.703 0.042 0.9678 ...
 ```
 ```
 head(m)
 ```
 ```
   CHR         SNP    BP A1 TEST NMISS      BETA     STAT       P
-1   1  rs58108140 10583  A  ADD  1551    0.1486    1.793 0.07314
-2   1 rs180734498 13302  T  ADD  1911   0.07006   0.7667  0.4433
-3   1 rs116400033 51479  A  ADD  1552   0.02572   0.3814   0.703
-4   1  rs62637813 52058  C  ADD  2348    0.1391    2.035 0.04199
-5   1 rs201374420 52185  T  ADD  2421 -0.004824 -0.04033  0.9678
-6   1 rs150021059 52238  T  ADD  2290   -0.1036  -0.8664  0.3864
+1   1  rs58108140 10583  A  ADD  1551  0.148600  1.79300 0.07314
+2   1 rs180734498 13302  T  ADD  1911  0.070060  0.76670 0.44330
+3   1 rs116400033 51479  A  ADD  1552  0.025720  0.38140 0.70300
+4   1  rs62637813 52058  C  ADD  2348  0.139100  2.03500 0.04199
+5   1 rs201374420 52185  T  ADD  2421 -0.004824 -0.04033 0.96780
+6   1 rs150021059 52238  T  ADD  2290 -0.103600 -0.86640 0.38640
 ```
 ```
 tail(m)
 ```
 ```
-        CHR         SNP       BP A1 TEST NMISS      BETA    STAT      P
-8776418  22 rs144549712 51229855  A  ADD  2206   0.02949  0.5249 0.5997
-8776419  22  rs62240042 51233300  T  ADD  1536 -0.009488 -0.2751 0.7833
-8776420  22 rs200507571 51236013 AT  ADD  1847  0.003518 0.08454 0.9326
-8776421  22   rs3896457 51237063  C  ADD  1802   -0.0187 -0.5628 0.5737
-8776422  22 rs149733995 51238249  C  ADD  2268   0.06418  0.9966  0.319
-8776423  22 rs181833046 51243297  T  ADD  2250    0.1005   1.066 0.2866
+        CHR         SNP       BP A1 TEST NMISS      BETA     STAT      P
+8776418  22 rs144549712 51229855  A  ADD  2206  0.029490  0.52490 0.5997
+8776419  22  rs62240042 51233300  T  ADD  1536 -0.009488 -0.27510 0.7833
+8776420  22 rs200507571 51236013 AT  ADD  1847  0.003518  0.08454 0.9326
+8776421  22   rs3896457 51237063  C  ADD  1802 -0.018700 -0.56280 0.5737
+8776422  22 rs149733995 51238249  C  ADD  2268  0.064180  0.99660 0.3190
+8776423  22 rs181833046 51243297  T  ADD  2250  0.100500  1.06600 0.2866
 ```
 ### Creating Manhattan Plots
 From the above dataset, lets generate a basic Manhattan plot.
@@ -140,10 +140,10 @@ dev.off()
 
 ![](https://github.com/kaustubhad/fastman/blob/main/md1.png)
 
-We can change some basic graph parameters. Let us increase the y-axis limit (```ylim=```) to 8, reduce the point size (```cex=```) to 30% and reduce the font size of the axis labels (```cex.axis=```) to 40%. We can also change the colour palette (```col=```) and remove the suggestive (```suggestiveline=```) and genome-wide (```genomewideline=```) significance lines.
+We can change some basic graph parameters. Let us increase the y-axis limit (```ylim=```) to 16, reduce the point size (```cex=```) to 30% and reduce the font size of the axis labels (```cex.axis=```) to 50%. We can also change the colour palette (```col=```) and remove the suggestive (```suggestiveline=```) and genome-wide (```genomewideline=```) significance lines.
 ```
 png("md2.png", width=10, height=6, units="in", res=300)
-fastman(m, ylim = c(0,8), cex = 0.3, cex.axis = 0.4, col = "rainbow1", suggestiveline = FALSE, genomewideline = FALSE)
+fastman(m, ylim = c(0,16), cex = 0.3, cex.axis = 0.5, col = "rainbow1", suggestiveline = FALSE, genomewideline = FALSE)
 dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/md2.png)
@@ -151,17 +151,17 @@ dev.off()
 We can now look into the SNPs of a single chromosome.
 ```
 png("md3.png", width=10, height=6, units="in", res=300)
-fastman(m, chrsubset=1)
+fastman(m, chrsubset=3)
 dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/md3.png)
 
-Let us say we are interested in highlighting some particular 1000 SNPs in chromosome 1. We have the name of the required SNPs in a character vector called snp1.
+Let us say we are interested in highlighting some particular 10000 SNPs in chromosome 1. We have the name of the required SNPs in a character vector called snp1.
 ```
 str(snp1)
 ```
 ```
-chr [1:1000] "rs3094315" "rs3094315" "rs3131972" "rs3131972" "rs12124819" ...
+chr [1:10000] "rs12618998" "rs201530365" "rs13001505" "rs6742479" "rs6742805" ...
 ```
 ```
 png("md4.png", width=10, height=6, units="in", res=300)
@@ -173,7 +173,7 @@ dev.off()
 We can annotate SNPs based on their p-value. By default, among the SNPs that exceed the provided threshold, only the top SNP in every chromosome is annotated.
 ```
 png("md5.png", width=10, height=6, units="in", res=300)
-fastman(m, annotatePval=1E-3)
+fastman(m, annotatePval=1E-7)
 dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/md5.png)
@@ -181,7 +181,7 @@ dev.off()
 We can override the default rule, and annotate all the SNPs beyond our specified threshold.
 ```
 png("md6.png", width=10, height=6, units="in", res=300)
-fastman(m, annotatePval=1E-3, annotateTop = FALSE)
+fastman(m, annotatePval=1E-7, annotateTop = FALSE)
 dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/md6.png)
