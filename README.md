@@ -142,13 +142,45 @@ dev.off()
 
 ![](https://github.com/kaustubhad/fastman/blob/main/md1.png)
 
+Let us compare the time of plot generation with qqman. For this purpose, we are going to use a library ```tictoc``` which will record the run time.
+```
+library(tictoc)
+tic(); png("md1.png", width=10, height=6, units="in", res=300); fastman(m); dev.off(); toc();
+```
+
+This will record the run time of fastman.
+```
+77.238 sec elapsed
+```
+
+Now, lets run the same code for qqman.
+```
+library(qqman)
+tic(); png("md1a.png", width=10, height=6, units="in", res=300); manhattan(m); dev.off(); toc();
+```
+
+Lets find out the run time of qqman.
+```
+
+```
+
+As seen above, fastman reduces the run time drastically.
+
 We can change some basic graph parameters. Let us reduce the point size (```cex=```) to 30% and reduce the font size of the axis labels (```cex.axis=```) to 50%. We can also change the colour palette (```col=```) and remove the suggestive (```suggestiveline=```) and genome-wide (```genomewideline=```) significance lines.
 ```
 png("md2.png", width=10, height=6, units="in", res=300)
-fastman(m, cex = 0.3, cex.axis = 0.5, col = "rainbow1", suggestiveline = FALSE, genomewideline = FALSE)
+fastman(m, cex=0.3, cex.axis=0.5, col="rainbow1", suggestiveline=FALSE, genomewideline=FALSE)
 dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/md2.png)
+
+In this plot, if we want to show p-values till 1E-10, we can set ```maxP=10```, instead of changing the ```ylim```.
+```
+png("md2a.png", width=10, height=6, units="in", res=300)
+fastman(m, cex=0.3, cex.axis=0.5, col="rainbow1", suggestiveline=FALSE, genomewideline=FALSE, maxP=10)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md2a.png)
 
 We can now look into the SNPs of a single chromosome.
 ```
@@ -223,3 +255,19 @@ fastman(m, annotatePval=1E-5, annotationWinMb=5)
 dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/md10.png)
+
+Among the remaining two modifiers, ```annotationCol``` sets the annotation colour and ```annotationAngle``` specifies the angle of annotation. The default colour is gray and the default angle is 45 degrees. Let us illustrate with an example.
+```
+png("md11.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-5, annotationCol="red", annotationAngle= 60)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md11.png)
+
+We can choose to colour only the points above our specified p-value threshold. The rest of the plot will become gray.
+```
+png("md12.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-5, colAbovePval=TRUE)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md12.png)
