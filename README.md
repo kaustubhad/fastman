@@ -33,7 +33,7 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **speedup** = A logical value; if TRUE, the function employs the faster method where input values above 99.8% are rounded to 3 digits, and the rest is rounded to 2 digits.
 * **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values is plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
 * **col**	= A string indicating the color scheme of the plot. Defaults to “matlab”.
-* **maxP**	= A numeric value indicating the maximum negative logarithm of p-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL/NA as input if truncation is not required.
+* **maxP**	= A numeric value indicating the maximum negative logarithm of p-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
 * **sortchr**	= A logical value; if TRUE, the table is sorted by chromosome number before plotting. If not specified by user, the function takes default value TRUE.
 * **bybp** = A logical value; if TRUE, the table is sorted by chromosome positions before plotting. If not specified by user, the function takes default value FALSE.
 * **chrsubset** = The range of chromosome numbers to be plotted.
@@ -43,7 +43,7 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **annotatePval**	= A numeric value, if set, SNPs with p-values below this will be annotated on the plot.
 * **colAbovePval**	= A logical value, if TRUE, will colour all hits above the specified p-value threshold, while the points below the threshold will be coloured gray. Defaults to FALSE.
 * **annotateTop**	= A logical value; If TRUE, only annotates the top hit on each chromosome that is below the annotatePval threshold.
-* **annotationWinMb**	= A numeric value, if set, will determine the megabase window within which the top SNP will be highlighted.
+* **annotationWinMb**	= A numeric value, if set, will determine the megabase window within which the top SNP will be annotated.
 * **annotateN**	= A numeric value, if set, this number of top SNPs will be annotated on the plot.
 * **annotationCol** = A string indicating the color of annotation. Defaults to grey.
 * **annotationAngle**	= The angle of annotation, defaults to 45 degree.
