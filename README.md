@@ -142,10 +142,10 @@ dev.off()
 
 ![](https://github.com/kaustubhad/fastman/blob/main/md1.png)
 
-We can change some basic graph parameters. Let us increase the y-axis limit (```ylim=```) to 16, reduce the point size (```cex=```) to 30% and reduce the font size of the axis labels (```cex.axis=```) to 50%. We can also change the colour palette (```col=```) and remove the suggestive (```suggestiveline=```) and genome-wide (```genomewideline=```) significance lines.
+We can change some basic graph parameters. Let us reduce the point size (```cex=```) to 30% and reduce the font size of the axis labels (```cex.axis=```) to 50%. We can also change the colour palette (```col=```) and remove the suggestive (```suggestiveline=```) and genome-wide (```genomewideline=```) significance lines.
 ```
 png("md2.png", width=10, height=6, units="in", res=300)
-fastman(m, ylim = c(0,16), cex = 0.3, cex.axis = 0.5, col = "rainbow1", suggestiveline = FALSE, genomewideline = FALSE)
+fastman(m, cex = 0.3, cex.axis = 0.5, col = "rainbow1", suggestiveline = FALSE, genomewideline = FALSE)
 dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/md2.png)
