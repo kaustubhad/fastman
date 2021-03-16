@@ -172,7 +172,17 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/md4.png)
 
-We can annotate SNPs based on their p-value. By default, among the SNPs that exceed the provided threshold, only the top SNP in every chromosome is annotated.
+We can also annotate the highlighted SNPs. By default, only the top SNP in every chromosome will be annotated.
+```
+png("md7.png", width=10, height=6, units="in", res=300)
+fastman(m, highlight = snp1, annotateHighlight = TRUE)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md7.png)
+
+Let us discuss the annotations in details. We have seven input parameters with respect to annotations: ```annotateHighlight```, ```annotatePval```, ```annotateTop```, ```annotationWinMb```, ```annotateN```, ```annotationCol``` and ```annotationAngle```. We have already discussed about ```annotateHighlight```. Among the rest, ```annotatePval``` and ```annotateN``` are annotation criteria, while the other four parameters are annotation modifiers.
+
+As stated above, we can annotate our plot in only two ways, either by providing a p-value threshold or by providing the required number of top SNPs. The p-value threshold can be provided using the ```annotatePval``` criterion. The user can provide either p-value or the negative logarithm as an input for this parameter, whichever is convenient. For example, both 1E-7 and 7 are acceptable input values.
 ```
 png("md5.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-7)
@@ -180,18 +190,36 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/md5.png)
 
-We can override the default rule, and annotate all the SNPs beyond our specified threshold.
+We can see that, among the SNPs that exceed the provided threshold, only the top SNP in every chromosome is annotated. We have observed the same for ```annotateHighlight``` as well. We will come to that later, when we discuss the annotation modifiers.
+
+For now, let us explore the other annotation criterion ```annotateN```. Lets say we want to annotate the top 20 SNPs of the data.
+```
+png("md8.png", width=10, height=6, units="in", res=300)
+fastman(m, annotateN=20)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md8.png)
+
+Lets go back to the observation we made while using ```annotateHighlight``` and ```annotatePval```. By default, only the top SNP in every chromosome is annotated. We can override this default rule using the annotation modifier ```annotateTop```. This modifier has a default value ```TRUE``` unless mentioned otherwise by the user. Lets consider the example where we are annotating the SNPs beyond a specified p-value threshold. By setting ```annotateTop=FALSE```, we can annotate all the SNPs beyond our threshold instead of only the top SNP per chromosome.
 ```
 png("md6.png", width=10, height=6, units="in", res=300)
-fastman(m, annotatePval=1E-7, annotateTop = FALSE)
+fastman(m, annotatePval=1E-7, annotateTop=FALSE)
 dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/md6.png)
 
-We can annotate among highlighted SNPs as well. By default, only the top SNP in every chromosome will be highlighted.
+Now we move on to the next annotation modifier ```annotationWinMb```. Instead of annotating the top SNP in every chromosome, if we want to annotate the top SNP within our chosen megabase window, then this is the modifier for us. For this example, lets first reduce our p-value threshold to 1E-5.
 ```
-png("md7.png", width=10, height=6, units="in", res=300)
-fastman(m, highlight = snp1, annotateHighlight = TRUE)
+png("md9.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-5)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md7.png)
+![](https://github.com/kaustubhad/fastman/blob/main/md9.png)
+
+Now, lets specify a 5 megabase window.
+```
+png("md10.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-5, annotationWinMb=5)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/md10.png)
