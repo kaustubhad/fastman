@@ -5,8 +5,9 @@ An **R package** for fast and efficient visualizing of GWAS results using Q-Q an
 * **Fast**: Drastically reduces time in plot generation compared to qqman. On a typical imputed PLINK assoc file of 10 million SNPs, plotting time is reduced from 737s in qqman to 60s.
 * **Efficient**: Optimized memory management
 * **Versatile**: Can handle various inputs from p-values, logarithms of p-values to FST scores. Compatible plotting with other genome-wide population genetic parameters (e.g. FST, pi and D statistics)
-* **Familiar**: Has a very similar set of input arguments and code structure compared to qqman.
 * **Non-model friendly**: Additional support for results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds), alphabetical and other ordering options.
+* **Annotation and Highlight versatility**: Has a wide set of options to customize annotating and highlighting SNPs of interest.
+* **Familiar**: Has a very similar set of input arguments and code structure compared to qqman.
 
 ## Functions:
 
@@ -24,13 +25,13 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 ```
 
 #### Parameters:
-* **m**	= A data frame with columns "BP," "CHR," "P," and optionally, "SNP”.
-* **chr**	= A string denoting the column name for the chromosome. Defaults to “CHR”, which corresponds to the PLINK –assoc command output. The column must be numeric.
+* **m**	= A data frame containing data for producing the manhattan plot. Has to contain a minimum of three columns: base pair position, chromosome ID, and P-value: defaults are "BP", "CHR", "P" following the Plink assoc file convention. And optionally some sort of ID, e.g. the SNP ID (default "SNP”) if annotations are needed. See explanations of the next four parameters if your column names are different, e.g. for non-model organisms you can use contid ID instead of chromosome ID.
+* **chr**	= A string denoting the column name for the chromosome. Defaults to “CHR”, which corresponds to the PLINK –assoc command output. For non-model organisms, this could be the contig ID.
 * **bp** = A string denoting the column name for the chromosomal position. Defaults to “BP”, which corresponds to the PLINK –assoc command output. The column must be numeric.
-* **p**	= A string denoting the column name for the p-values or scores for the SNP association tests. Defaults to “P”, which corresponds to the PLINK –assoc command output. The column must be numeric.
+* **p**	= A string denoting the column name for the p-values or scores for the SNP association tests. Defaults to “P”, which corresponds to the PLINK –assoc command output. The column must be numeric. You can also provide alread-computed log of p-values, e.g. from published summary statistics.
 * **snp**	= A string denoting the column name for the SNP name (rs number). The column must be character.
-* **chrlabs**	= A character vector of length equal to the number of chromosomes specifying the chromosome labels (e.g., c (1:22, "X", "Y", "MT")).
-* **speedup** = A logical value; if TRUE, the function employs the faster method where input values above 99.8% are rounded to 3 digits, and the rest is rounded to 2 digits.
+* **chrlabs**	= An optional character vector of length equal to the number of chromosomes, specifying the chromosome labels. e.g., you can provide c(1:22, "X", "Y", "MT") to convert the Plink numerical notation of 23=X, 24=Y, etc.
+* **speedup** = A logical value; if TRUE, the function employs the faster method where input values at the extreme 0.2% are rounded to 3 digits, and the rest is rounded to 2 digits. The default value of this parameter is TRUE.
 * **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values is plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
 * **col**	= A string indicating the color scheme of the plot. Defaults to “matlab”. There are various options available for user. See below for details.
 * **maxP**	= A numeric value indicating the maximum negative logarithm of p-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
@@ -47,15 +48,15 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **annotateN**	= A numeric value, if set, this number of top SNPs will be annotated on the plot.
 * **annotationCol** = A string indicating the color of annotation. Defaults to grey.
 * **annotationAngle**	= The angle of annotation, defaults to 45 degree.
-* **baseline**	= The position to draw a baseline. Defaults to NULL, which means there would not be a default baseline unless the user specifies a desired baseline position. In case the data has a left tail the user might want to provide a baseline position for reference. In case multiple baselines are required, the user can provide a vector of positions.
-* **suggestiveline**	= The position to draw a "suggestive" line. Defaults to -log10(1e-5). In case multiple suggestive lines are required, the user can provide a vector of positions.
-* **genomewideline**	= The position to draw a “genome-wide significant” line. Defaults to -log10(5e-8). In case multiple genome-wide significant lines are required, the user can provide a vector of positions.
+* **baseline**	= The position to draw a baseline in black. Defaults to NULL, as a typical manhattan plot already has a baseline at y=0. In case the data has a left tail (e.g. two-sided scoes) the user might want to provide a baseline position for reference. In case multiple baselines are required, the user can provide a vector of positions.
+* **suggestiveline**	= The position to draw a GWAS "suggestive significance" line. Defaults to -log10(1e-5). In case multiple suggestive lines are required, the user can provide a vector of positions.
+* **genomewideline**	= The position to draw a GWAS “genome-wide significance” line. Defaults to -log10(5e-8). In case multiple genome-wide significant lines are required, the user can provide a vector of positions.
 * **cex** = A a numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.4.
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.6.
 * **xlab**	= A label for the x axis, defaults to a description of x.
 * **ylab**	= A label for the y axis, defaults to a description of y.
-* **xlim**	= the x limits (x1, x2) of the plot. Note that x1 > x2 is allowed and leads to a ‘reversed axis’. The default value, NULL, indicates that the range of the finite values to be plotted should be used. User should refrain from changing xlim in order to subset x-axis by region. The better option is to specify the same in the bprange arguent, as changing xlim might lead to improper scaling and annotation spacing in the plot.
-* **ylim** = The y limits of the plot. User should refrain from changing ylim in order to truncate y-axis. The better option is to specify the same in the maxP arguent, as changing ylim might lead to improper scaling and annotation spacing in the plot.
+* **xlim**	= The x limits of the plot. The user should refrain from changing xlim in order to subset x-axis by region. The better option is to specify this in the bprange arguent, as changing xlim might lead to improper scaling and spacing in the plot.
+* **ylim** = The y limits of the plot. The user should refrain from changing ylim in order to truncate y-axis. The better option is to specify the same in the maxP arguent, as changing ylim might lead to improper scaling and spacing in the plot.
 
 #### Value
 A Manhattan Plot
