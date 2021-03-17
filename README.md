@@ -40,22 +40,22 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **bprange**	= The range of chromosome positions to be plotted. In case the user wants to subset the X-axis by region, then this should be the parameter of choice, not xlim.
 * **highlight**	= A character vector of SNPs in the dataset to highlight. These SNPs should all be in the dataset.
 * **annotateHighlight**	= A logical value; if TRUE, annotates all highlighted SNPs in case more specific annotation instructions are not provided.
-* **annotatePval**	= A numeric value, if set, SNPs with p-values below this will be annotated on the plot.
+* **annotatePval**	= A numeric value, if set, SNPs with p-values below this will be annotated on the plot. In case of p-value, the user can provide either the p-value or the negative logarithm of p-value as input for this argument, whichever is convenient. In case of scores, the user can provide the score cutoff directly as input. 
 * **colAbovePval**	= A logical value, if TRUE, will colour all hits above the specified p-value threshold, while the points below the threshold will be coloured gray. Defaults to FALSE.
-* **annotateTop**	= A logical value; If TRUE, only annotates the top hit on each chromosome that is below the annotatePval threshold.
-* **annotationWinMb**	= A numeric value, if set, will determine the megabase window within which the top SNP will be annotated.
+* **annotateTop**	= A logical value; If TRUE, only annotates the top hit on each chromosome that is below the annotatePval threshold. This is just a modifier, and it works only when used with either annotatePval, annotateHighlight or annotateN.
+* **annotationWinMb**	= A numeric value, if set, will determine the megabase window within which the top SNP will be annotated. This is just a modifier, and it works only when used with either annotatePval, annotateHighlight or annotateN.
 * **annotateN**	= A numeric value, if set, this number of top SNPs will be annotated on the plot.
 * **annotationCol** = A string indicating the color of annotation. Defaults to grey.
 * **annotationAngle**	= The angle of annotation, defaults to 45 degree.
-* **baseline**	= A logical value; if TRUE, will add an additional black y = 0 baseline to the plot. This is only required when the data has a left tail. Defaults to FALSE.
+* **baseline**	= The position to draw a baseline. Defaults to NULL, which means there would not be a default baseline unless the user specifies a desired baseline position. In case the data has a left tail the user might want to provide a baseline position for reference. In case multiple baselines are required, the user can provide a vector of positions.
 * **suggestiveline**	= The position to draw a "suggestive" line. Defaults to -log10(1e-5). In case multiple suggestive lines are required, the user can provide a vector of positions.
 * **genomewideline**	= The position to draw a “genome-wide significant” line. Defaults to -log10(5e-8). In case multiple genome-wide significant lines are required, the user can provide a vector of positions.
 * **cex** = A a numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.4.
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.6.
 * **xlab**	= A label for the x axis, defaults to a description of x.
 * **ylab**	= A label for the y axis, defaults to a description of y.
-* **xlim**	= the x limits (x1, x2) of the plot. Note that x1 > x2 is allowed and leads to a ‘reversed axis’. The default value, NULL, indicates that the range of the finite values to be plotted should be used.
-* **ylim** = The y limits of the plot.
+* **xlim**	= the x limits (x1, x2) of the plot. Note that x1 > x2 is allowed and leads to a ‘reversed axis’. The default value, NULL, indicates that the range of the finite values to be plotted should be used. User should refrain from changing xlim in order to subset x-axis by region. The better option is to specify the same in the bprange arguent, as changing xlim might lead to improper scaling and annotation spacing in the plot.
+* **ylim** = The y limits of the plot. User should refrain from changing ylim in order to truncate y-axis. The better option is to specify the same in the maxP arguent, as changing ylim might lead to improper scaling and annotation spacing in the plot.
 
 #### Value
 A Manhattan Plot
@@ -161,7 +161,7 @@ tic(); png("md1a.png", width=10, height=6, units="in", res=300); manhattan(m); d
 
 Lets find out the run time of qqman.
 ```
-
+630.995 sec elapsed
 ```
 
 As seen above, fastman reduces the run time drastically.
