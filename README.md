@@ -32,11 +32,11 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **chrlabs**	= A character vector of length equal to the number of chromosomes specifying the chromosome labels (e.g., c (1:22, "X", "Y", "MT")).
 * **speedup** = A logical value; if TRUE, the function employs the faster method where input values above 99.8% are rounded to 3 digits, and the rest is rounded to 2 digits.
 * **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values is plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
-* **col**	= A string indicating the color scheme of the plot. Defaults to “matlab”.
+* **col**	= A string indicating the color scheme of the plot. Defaults to “matlab”. There are various options available for user. See below for details.
 * **maxP**	= A numeric value indicating the maximum negative logarithm of p-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
 * **sortchr**	= A logical value; if TRUE, the table is sorted by chromosome number before plotting. If not specified by user, the function takes default value TRUE.
 * **bybp** = A logical value; if TRUE, the table is sorted by chromosome positions before plotting. If not specified by user, the function takes default value FALSE.
-* **chrsubset** = The range of chromosome numbers to be plotted.
+* **chrsubset** = The subset of chromosome numbers to be plotted.
 * **bprange**	= The range of chromosome positions to be plotted. In case the user wants to subset the X-axis by region, then this should be the parameter of choice, not xlim.
 * **highlight**	= A character vector of SNPs in the dataset to highlight. These SNPs should all be in the dataset.
 * **annotateHighlight**	= A logical value; if TRUE, annotates all highlighted SNPs in case more specific annotation instructions are not provided.
