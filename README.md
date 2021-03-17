@@ -4,7 +4,7 @@
 An **R package** for fast and efficient visualizing of GWAS results using Q-Q and Manhattan plots directly from PLINK output files.
 * **Fast**: Drastically reduces time in plot generation compared to qqman. On a typical imputed PLINK assoc file of 10 million SNPs, plotting time is reduced from 737s in qqman to 60s.
 * **Efficient**: Optimized memory management
-* **Versatile**: Can handle various inputs from p-values, logarithms of p-values to FST scores. Compatible plotting with other genome-wide population genetic parameters (e.g. FST, pi and D statistics)
+* **Versatile**: Can handle various inputs from p-values, logarithms of p-values to FST scores. Compatible plotting with other genome-wide population genetic parameters (e.g. FST, pi and D statistics). Allows both-sided scores, e.g. scores with negative values.
 * **Non-model friendly**: Additional support for results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds), alphabetical and other ordering options.
 * **Annotation and Highlight versatility**: Has a wide set of options to customize annotating and highlighting SNPs of interest.
 * **Familiar**: Has a very similar set of input arguments and code structure compared to qqman.
