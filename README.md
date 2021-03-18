@@ -183,7 +183,7 @@ png("md2a.png", width=10, height=6, units="in", res=300)
 fastman(m, cex=0.3, cex.axis=0.5, col="rainbow1", suggestiveline=FALSE, genomewideline=FALSE, maxP=10)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md2a.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md2a.png)
 
 We can now look into the SNPs of a single chromosome.
 ```
@@ -191,7 +191,7 @@ png("md3.png", width=10, height=6, units="in", res=300)
 fastman(m, chrsubset=3)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md3.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md3.png)
 
 Let us say we are interested in highlighting some particular 10000 SNPs in chromosome 1. We have the name of the required SNPs in a character vector called snp1.
 ```
@@ -205,7 +205,7 @@ png("md4.png", width=10, height=6, units="in", res=300)
 fastman(m, highlight = snp1)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md4.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md4.png)
 
 We can also annotate the highlighted SNPs. By default, only the top SNP in every chromosome will be annotated.
 ```
@@ -213,7 +213,7 @@ png("md7.png", width=10, height=6, units="in", res=300)
 fastman(m, highlight = snp1, annotateHighlight = TRUE)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md7.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md7.png)
 
 Let us discuss the annotations in details. We have seven input parameters with respect to annotations: ```annotateHighlight```, ```annotatePval```, ```annotateTop```, ```annotationWinMb```, ```annotateN```, ```annotationCol``` and ```annotationAngle```. We have already discussed about ```annotateHighlight```. Among the rest, ```annotatePval``` and ```annotateN``` are annotation criteria, while the other four parameters are annotation modifiers.
 
@@ -223,7 +223,7 @@ png("md5.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-7)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md5.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md5.png)
 
 We can see that, among the SNPs that exceed the provided threshold, only the top SNP in every chromosome is annotated. We have observed the same for ```annotateHighlight``` as well. We will come to that later, when we discuss the annotation modifiers.
 
@@ -233,7 +233,7 @@ png("md8.png", width=10, height=6, units="in", res=300)
 fastman(m, annotateN=20)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md8.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md8.png)
 
 Lets go back to the observation we made while using ```annotateHighlight``` and ```annotatePval```. By default, only the top SNP in every chromosome is annotated. We can override this default rule using the annotation modifier ```annotateTop```. This modifier has a default value ```TRUE``` unless mentioned otherwise by the user. Lets consider the example where we are annotating the SNPs beyond a specified p-value threshold. By setting ```annotateTop=FALSE```, we can annotate all the SNPs beyond our threshold instead of only the top SNP per chromosome.
 ```
@@ -241,7 +241,7 @@ png("md6.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-7, annotateTop=FALSE)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md6.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md6.png)
 
 Now we move on to the next annotation modifier ```annotationWinMb```. Instead of annotating the top SNP in every chromosome, if we want to annotate the top SNP within our chosen megabase window, then this is the modifier for us. For this example, lets first reduce our p-value threshold to 1E-5.
 ```
@@ -249,7 +249,7 @@ png("md9.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md9.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md9.png)
 
 Now, lets specify a 5 megabase window.
 ```
@@ -257,7 +257,7 @@ png("md10.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationWinMb=5)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md10.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md10.png)
 
 Among the remaining two modifiers, ```annotationCol``` sets the annotation colour and ```annotationAngle``` specifies the angle of annotation. The default colour is gray and the default angle is 45 degrees. Let us illustrate with an example.
 ```
@@ -265,7 +265,7 @@ png("md11.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationCol="red", annotationAngle= 60)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md11.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md11.png)
 
 We can choose to colour only the points above our specified p-value threshold. The rest of the plot will become gray.
 ```
@@ -273,7 +273,7 @@ png("md12.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, colAbovePval=TRUE)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md12.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md12.png)
 
 The colour schemes available for this package are provided below
 
