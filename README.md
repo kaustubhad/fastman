@@ -42,7 +42,8 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **highlight**	= A character vector of SNPs in the dataset to highlight. These SNPs should all be in the dataset.
 * **annotateHighlight**	= A logical value; if TRUE, annotates all highlighted SNPs in case more specific annotation instructions are not provided.
 * **annotatePval**	= A numeric value, if set, SNPs with p-values below this will be annotated on the plot. In case of p-value, the user can provide either the p-value or the negative logarithm of p-value as input for this argument, whichever is convenient. In case of scores, the user can provide the score cutoff directly as input. 
-* **colAbovePval**	= A logical value, if TRUE, will colour all hits above the specified p-value threshold, while the points below the threshold will be coloured gray. Defaults to FALSE.
+* **colAbovePval**	= A logical value, if TRUE, will colour all hits above the specified p-value threshold using colour scheme chosen in col argument (default "matlab"), while the points below the threshold will be coloured using the colour scheme chosen in col2 argument below (default "greys"). Defaults to FALSE.
+* **col2** = A string indicating the color scheme of the part of the plot below the specified p-value threshold. Defaults to “greys”. There are various options available for user. See below for details.
 * **annotateTop**	= A logical value; If TRUE, only annotates the top hit on each chromosome that is below the annotatePval threshold. This is just a modifier, and it works only when used with either annotatePval, annotateHighlight or annotateN.
 * **annotationWinMb**	= A numeric value, if set, will determine the megabase window within which the top SNP will be annotated. This is just a modifier, and it works only when used with either annotatePval, annotateHighlight or annotateN.
 * **annotateN**	= A numeric value, if set, this number of top SNPs will be annotated on the plot.
@@ -51,7 +52,8 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **baseline**	= The position to draw a baseline in black. Defaults to NULL, as a typical manhattan plot already has a baseline at y=0. In case the data has a left tail (e.g. two-sided scoes) the user might want to provide a baseline position for reference. In case multiple baselines are required, the user can provide a vector of positions.
 * **suggestiveline**	= The position to draw a GWAS "suggestive significance" line. Defaults to -log10(1e-5). In case multiple suggestive lines are required, the user can provide a vector of positions.
 * **genomewideline**	= The position to draw a GWAS “genome-wide significance” line. Defaults to -log10(5e-8). In case multiple genome-wide significant lines are required, the user can provide a vector of positions.
-* **cex** = A a numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.4.
+* **cex** = A numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.4.
+* **cex.text** = A numerical vector giving the amount by which annotation text should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.4.
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.6.
 * **xlab**	= A label for the x axis, defaults to a description of x.
 * **ylab**	= A label for the y axis, defaults to a description of y.
@@ -272,3 +274,55 @@ fastman(m, annotatePval=1E-5, colAbovePval=TRUE)
 dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/md12.png)
+
+The colour schemes available for this package are provided below
+
+**matlab**
+
+
+**matlab2**
+
+
+**Set1**
+
+
+**Dark2**
+
+
+**Set2**
+
+
+**DarkSet2**
+
+
+**reds**
+
+
+**greens**
+
+
+**blues**
+
+
+**purples**
+
+
+**greys**
+
+
+**rgbs**
+
+
+**all**
+
+
+**rainbow1**
+
+
+**rainbow2**
+
+
+**rainbow3**
+
+
+
