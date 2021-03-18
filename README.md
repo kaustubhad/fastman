@@ -278,8 +278,7 @@ dev.off()
 The colour schemes available for this package are provided below
 
 
-![](https://github.com/kaustubhad/fastman/blob/main/colours/1.matlab.png)
-![](https://github.com/kaustubhad/fastman/blob/main/colours/2.matlab2.png)
+![](https://github.com/kaustubhad/fastman/blob/main/colours/1.matlab.png)![](https://github.com/kaustubhad/fastman/blob/main/colours/2.matlab2.png)
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/3.Set1.png)
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/4.Dark2.png)
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/5.Set2.png)
