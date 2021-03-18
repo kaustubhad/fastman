@@ -278,51 +278,51 @@ dev.off()
 The colour schemes available for this package are provided below
 
 **matlab**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/1.matlab.png)
 
 **matlab2**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/2.matlab2.png)
 
 **Set1**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/3.Set1.png)
 
 **Dark2**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/4.Dark2.png)
 
 **Set2**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/5.Set2.png)
 
 **DarkSet2**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/6.Darkset2.png)
 
 **reds**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/7.reds.png)
 
 **greens**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/8.greens.png)
 
 **blues**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/9.blues.png)
 
 **purples**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/10.purples.png)
 
 **greys**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/11.greys.png)
 
 **rgbs**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/12.rgbs.png)
 
 **all**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/13.all.png)
 
 **rainbow1**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/14.rainbow1.png)
 
 **rainbow2**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/15.rainbow2.png)
 
 **rainbow3**
-
+![](https://github.com/kaustubhad/fastman/blob/main/colours/16.rainbow3.png)
 
 
