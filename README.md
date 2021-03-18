@@ -36,7 +36,7 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **col**	= A string indicating the color scheme of the plot. Defaults to “matlab”. There are various options available for user. See below for details.
 * **maxP**	= A numeric value indicating the maximum negative logarithm of p-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
 * **sortchr**	= A logical value; if TRUE, the table is sorted by chromosome number before plotting. If not specified by user, the function takes default value TRUE.
-* **bybp** = A logical value; if TRUE, the table is sorted by chromosome positions before plotting. If not specified by user, the function takes default value FALSE.
+* **bybp** = A logical value; if TRUE, the y-values are plotted against chromosome positions. In this case the table is not sorted by chromosome number before plotting. If not specified by user, the function takes default value FALSE. This feature is useful especially for plots where the user might be interested in studying the association p-values across contigs.
 * **chrsubset** = The subset of chromosome numbers to be plotted.
 * **bprange**	= The range of chromosome positions to be plotted. In case the user wants to subset the X-axis by region, then this should be the parameter of choice, not xlim.
 * **highlight**	= A character vector of SNPs in the dataset to highlight. These SNPs should all be in the dataset.
