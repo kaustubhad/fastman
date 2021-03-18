@@ -143,7 +143,7 @@ fastman(m)
 dev.off()
 ```
 
-![](https://github.com/kaustubhad/fastman/blob/main/md1.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md1.png)
 
 Let us compare the time of plot generation with qqman. For this purpose, we are going to use a library ```tictoc``` which will record the run time.
 ```
@@ -175,7 +175,7 @@ png("md2.png", width=10, height=6, units="in", res=300)
 fastman(m, cex=0.3, cex.axis=0.5, col="rainbow1", suggestiveline=FALSE, genomewideline=FALSE)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/md2.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md2.png)
 
 In this plot, if we want to show p-values till 1E-10, we can set ```maxP=10```, instead of changing the ```ylim```.
 ```
