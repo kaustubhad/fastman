@@ -267,7 +267,7 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/md11.png)
 
-We can choose to colour only the points above our specified p-value threshold. The rest of the plot will become gray.
+We can choose to colour only the points above our specified p-value threshold. The rest of the plot will become gray by default.
 ```
 png("md12.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, colAbovePval=TRUE)
@@ -275,8 +275,15 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/md12.png)
 
-The colour schemes available for this package are provided below
+In the above plot, we can change the colour of the region below our specified threshold as well.
+```
+png("md13.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-5, colAbovePval=TRUE, col2="greens")
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md13.png)
 
+The colour schemes available for this package are provided below.
 
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/1.matlab.png)
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/2.matlab2.png)
