@@ -290,7 +290,7 @@ The colour schemes available for this package are provided below.
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/3.Set1.png)
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/4.Dark2.png)
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/5.Set2.png)
-![](https://github.com/kaustubhad/fastman/blob/main/colours/6.Darkset2.png)
+![](https://github.com/kaustubhad/fastman/blob/main/colours/6.DarkSet2.png)
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/7.reds.png)
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/8.greens.png)
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/9.blues.png)
