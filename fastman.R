@@ -51,6 +51,7 @@ if (showsnp) { # snp column needed
   if (!(snp %in% colnames(m))) { stop(paste("Column", snp, "not found!")); } # if user doesn't specify snp column and there is no column called SNP in data then code gives error message
 }
 
+zerocount <- 5
 
 # set color palettes; no gray in ggplot palettes
 if (length(col)==1) {
@@ -174,7 +175,7 @@ if (showsnp) { # pick selected snps, using either of 3 flags
 	}
   }
   else if (!missing(annotatePval)) { # highlight snps with pvalue beyond a threshold; change based on logp=TRUE or not
-    f=(m$logP>=annotatePval); msnp=m[f,,drop=F]; # msnp will contain the SNP information for annotation, in this case msnp contains information of SNPs with p-value beyond threshold
+    f=(m$logP>=annotatePval); zerocount=sum(f); msnp=m[f,,drop=F]; # msnp will contain the SNP information for annotation, in this case msnp contains information of SNPs with p-value beyond threshold
   }
   else if (!missing(annotateN)) { # highlight top N snps
     if (!missing(annotationWinMb)) { # within each chr, only one snp within annotationWinMb window. annotationWinMb value adjusted by factor above
@@ -198,7 +199,7 @@ if (showsnp) { # pick selected snps, using either of 3 flags
 
 if (!missing(annotationWinMb)) { annotateTop=FALSE; } # if annotating by window, then top snp flag not applicable
 
-if (missing(highlight)&!missing(annotatePval)) { # not using highlight list, but just annotatePval instead. check annotateTop and annotationWinMb options
+if (missing(highlight)&!missing(annotatePval)&zerocount>0) { # not using highlight list, but just annotatePval instead. check annotateTop and annotationWinMb options
   if (annotateTop) { # if annotateTop = TRUE (default), only top snps in each chr is shown. else all top snps are shown
     m1=NULL; sunc=unique(msnp$C);
     for (i in sunc) { m2=msnp[msnp$C==i,]; f=m2$logP==max(m2$logP); m1=rbind(m1,m2[f,]); } # loop over chr and identify the max logP value for every chr
@@ -224,6 +225,14 @@ if (!is.null(maxP)) { # if user has not specified that there should not be any m
   }
   f=m$logP<=-maxP; m$logP[f]=-maxP; # logP values below -maxP are truncated to -maxP in m
   f=m$logP>=maxP; m$logP[f]=maxP; # logP values above maxP are truncated to maxP in m
+}
+else { # if user has specified that there should not be any maxP truncation
+  if (showsnp) { # if annotation is required
+    f=msnp$logP==Inf; msnp$logP[f]=sort(msnp$logP)[length(msnp$logP)-1]; # Inf values are truncated to highest finite value
+	f=msnp$logP==-Inf; msnp$logP[f]=sort(msnp$logP)[2]; # -Inf values are truncated to lowest finite value
+  }
+  f=m$logP==Inf; m$logP[f]=sort(m$logP)[length(m$logP)-1]; # Inf values are truncated to highest finite value
+  f=m$logP==-Inf; m$logP[f]=sort(m$logP)[2]; # -Inf values are truncated to lowest finite value
 }
 
 # part 2 C: finally keep 3 columns only, as msnp with snp names is separate now -----------------------------------
@@ -295,7 +304,7 @@ ybnd=c(floor(min(c(min(ms$logP),0))),ceiling(max(ms$logP))); # setting the y axi
 fac=0.015*(max(ms$BPn)-min(ms$BPn));
 if (numc==1) { xbnd=c(min(ms$BPn)-fac,max(ms$BPn)+fac); } else { xbnd=c(-fac,max(ms$BPn)+fac); }
 
-if (showsnp) { # if annotation is required
+if (showsnp&zerocount>0) { # if annotation is required
 	parmai=par("mai"); # measuring the margin size in inches
 	plotx=par("pin")[1]; ploty=par("pin")[2]; # storing the plot width in inches within variable plotx and plot height in inches within variable ploty
 	xwidth=xbnd[2]-xbnd[1]; ywidth=ybnd[2]-ybnd[1]; # calculating the inherent width and height of the plot
@@ -368,14 +377,17 @@ if (annotationAngle==0) { adj=c(0,0.5); }
 if (!missing(highlight)) { # show highlighted snps
   points(msnp$BPn,msnp$logP,col=annotationCol,pch=20,cex=cex); # plotting highlighted points
   if (annotateHighlight) { # annotate some/all of listed snps
-    if (!missing(annotatePval)) { f=msnp$logP>=annotatePval; m2=msnp[f,]; text(x=m2$BPn+fac/7,y=m2$logP+fac/7,labels=m2$SNP,adj=adj,srt=annotationAngle,col=annotationCol,cex=cex.text,...); } # only snps above threshold
+    if (!missing(annotatePval)) { f=msnp$logP>=annotatePval; if (zerocount>0) { m2=msnp[f,]; text(x=m2$BPn+fac/7,y=m2$logP+fac/7,labels=m2$SNP,adj=adj,srt=annotationAngle,col=annotationCol,cex=cex.text,...); } } # only snps above threshold
     else { m2=msnp; text(x=m2$BPn+fac/7,y=m2$logP+fac/7,labels=m2$SNP,adj=adj,srt=annotationAngle,col=annotationCol,cex=cex.text,...); } # all snps
   }
 }
 
-if (showsnp&missing(highlight)) { # not using highlight list, but annotatePval or annotateN instead
+if (!missing(annotateN)) { # not using highlight list, but annotatePval or annotateN instead
   m2=msnp; text(x=m2$BPn+fac/7,y=m2$logP+fac/7,labels=m2$SNP,adj=adj,srt=annotationAngle,col=annotationCol,cex=cex.text,...); # annotating the selected snps
 }
 
+if (!missing(annotatePval)&(zerocount>0)) { # not using highlight list, but annotatePval or annotateN instead
+  m2=msnp; text(x=m2$BPn+fac/7,y=m2$logP+fac/7,labels=m2$SNP,adj=adj,srt=annotationAngle,col=annotationCol,cex=cex.text,...); # annotating the selected snps
+}
 
 }
