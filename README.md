@@ -283,6 +283,66 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/md13.png)
 
+As stated previously, our package also supports plotting of results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds). This is an incremental feature, as the \textit{qqman} package does not support direct plotting of results from non-model organisms (Chromosome column for input dataset needs to be numeric for qqman).
+```
+m=read.table("plink.assoc.fisher",header=TRUE,stringsAsFactors=FALSE,sep= '')
+```
+This dataset has results for 57,712 SNPs on 760 chromosomes. Let us look at the data.
+```
+str(m)
+```
+```
+'data.frame':	57712 obs. of  9 variables:
+ $ CHR: chr  "NC_015762.1" "NC_015762.1" "NC_015762.1" "NC_015762.1" ...
+ $ SNP: chr  "1139:88:-" "1139:45:-" "1139:28:-" "2518:86:+" ...
+ $ BP : int  32821 32864 32881 58664 68491 83326 83332 92777 92937 92945 ...
+ $ A1 : chr  "T" "C" "G" "T" ...
+ $ F_A: num  0 0.5217 0 0.0222 0.5217 ...
+ $ F_U: num  0.0454 0.375 0.0454 0.0465 0.3636 ...
+ $ A2 : chr  "C" "T" "A" "C" ...
+ $ P  : num  0.0551 0.0528 0.0551 0.436 0.0366 ...
+ $ OR : num  0 1.818 0 0.466 1.909 ...
+```
+```
+head(m)
+```
+```
+          CHR       SNP    BP A1     F_A     F_U A2       P     OR
+1 NC_015762.1 1139:88:- 32821  T 0.00000 0.04545  C 0.05513 0.0000
+2 NC_015762.1 1139:45:- 32864  C 0.52170 0.37500  T 0.05276 1.8180
+3 NC_015762.1 1139:28:- 32881  G 0.00000 0.04545  A 0.05513 0.0000
+4 NC_015762.1 2518:86:+ 58664  T 0.02222 0.04651  C 0.43600 0.4659
+5 NC_015762.1 3702:96:- 68491  C 0.52170 0.36360  T 0.03664 1.9090
+6 NC_015762.1 4414:33:- 83326  A 0.50000 0.31820  G 0.01556 2.1430
+```
+```
+tail(m)
+```
+```
+                 CHR           SNP  BP A1     F_A     F_U A2      P     OR
+57707 NW_003570988.1 18013690:37:- 547  G 0.06818 0.08333  C 0.7782 0.8049
+57708 NW_003570988.1 18013681:25:- 550  A 0.00000 0.01190  G 0.4941 0.0000
+57709 NW_003570988.1 18013687:31:- 550  A 0.01282 0.01389  G 1.0000 0.9221
+57710 NW_003570988.1  18013670:8:- 556  T 0.12820 0.19230  A 0.3830 0.6176
+57711 NW_003570988.1  18013666:3:- 557  A 0.05128 0.08571  G 0.5178 0.5766
+57712 NW_003570988.1 18013689:26:- 557  A 0.02632 0.01282  G 0.6176 2.0810
+```
+The dataset contains P-values (column P) and two scores (F_A and F_U). From the dataset, lets generate a basic Manhattan plot for P-values.
+```
+png("md14.png", width=10, height=6, units="in", res=300)
+fastman(m)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md14.png)
+
+Now let us plot the Manhattan plots for one of the scores. We must note that the scores do not need log transformations and so we must specify that while running.
+```
+png("md15.png", width=10, height=6, units="in", res=300)
+fastman(m, p = "F_A", logp = FALSE)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md15.png)
+
 The colour schemes available for this package are provided below.
 
 ![](https://github.com/kaustubhad/fastman/blob/main/colours/1.matlab.png)
