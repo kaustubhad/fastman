@@ -283,7 +283,7 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/md13.png)
 
-As stated previously, our package also supports plotting of results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds). This is an incremental feature, as the \textit{qqman} package does not support direct plotting of results from non-model organisms (Chromosome column for input dataset needs to be numeric for qqman).
+As stated previously, our package also supports plotting of results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds). This is an incremental feature, as the qqman package does not support direct plotting of results from non-model organisms (Chromosome column for input dataset needs to be numeric for qqman).
 ```
 m=read.table("plink.assoc.fisher",header=TRUE,stringsAsFactors=FALSE,sep= '')
 ```
