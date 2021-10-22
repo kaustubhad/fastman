@@ -259,13 +259,29 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/md10.png)
 
-Among the remaining two modifiers, ```annotationCol``` sets the annotation colour and ```annotationAngle``` specifies the angle of annotation. The default colour is gray and the default angle is 45 degrees. Let us illustrate with an example.
+Among the remaining two modifiers, ```annotationCol``` sets the annotation colour and ```annotationAngle``` specifies the angle of annotation. The default colour is "gray50" and the default angle is 45 degrees. Let us illustrate with an example.
 ```
 png("md11.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationCol="red", annotationAngle= 60)
 dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/md11.png)
+
+As stated already, the default annotation colour in our function is "gray50". However, if the user chooses the colour palette "greys" for the plot, then the default annotation colour changes to "green4".
+```
+png("md18.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-5, col = "greys")
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md18.png)
+
+We have the option to provide a column indicating the annotation colour intended for each SNP as a part of the input dataframe. In that case, we just need to specify the name of column in the ```annotationCol``` argument. Let us show this in the example below. In our example, the input dataframe has a separate column named ANNCOL for intended annotation colours for each SNP. Using the column we have annotated the first 4 chromosomes with green, chromosome 5-10 with red and the rest with blue as can be seen in the plot below.
+```
+png("md17.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-5, annotationCol="ANNCOL")
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md17.png)
 
 We can choose to colour only the points above our specified p-value threshold. The rest of the plot will become gray by default.
 ```
