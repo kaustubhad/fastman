@@ -283,6 +283,14 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/md17.png)
 
+In case we do not want to annotate any particular set of SNPs we can just provide NA values in the ```annotationCol``` column for those SNPs. In our example, we have another column ANNCOL2 in our input dataframe that has NA values corresponding to chromosomes 3,4 and 5. The rest of the values of ANNCOL are exactly same as that of the column ANNCOL. We have provided NA values in this column because we do not want to annotate SNPs in chromosomes 3,4 and 5. Let us see what the plot looks like when we run the command using this column for ```annoationCol``` argument.
+```
+png("md19.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-5, annotationCol="ANNCOL2")
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/plots/md19.png)
+
 We can choose to colour only the points above our specified p-value threshold. The rest of the plot will become gray by default.
 ```
 png("md12.png", width=10, height=6, units="in", res=300)
