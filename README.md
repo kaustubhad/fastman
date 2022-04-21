@@ -8,6 +8,7 @@ An **R package** for fast and efficient visualizing of GWAS results using Q-Q an
 * **Non-model friendly**: Additional support for results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds), alphabetical and other ordering options.
 * **Annotation and Highlight versatility**: Has a wide set of options to customize annotating and highlighting SNPs of interest.
 * **Familiar**: Has a very similar set of input arguments and code structure compared to qqman.
+* **Missing Value Handling**: Can handle missing values in the input dataframe.
 
 ## Functions:
 
