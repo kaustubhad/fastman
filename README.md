@@ -145,6 +145,10 @@ dev.off()
 
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/md1.png)
 
+Before moving into any further details, let us look into the plethora of options that this package provides us in a single plot. We will understand these options more rigorously as we go into the later parts of this exercise.
+
+![](https://github.com/kaustubhad/fastman/blob/main/plots/test2.png)
+
 Let us compare the time of plot generation with qqman. For this purpose, we are going to use a library ```tictoc``` which will record the run time.
 ```
 library(tictoc)
