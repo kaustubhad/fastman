@@ -1,0 +1,22 @@
+Package: fastman
+Type: Package
+Title: Fast and efficient visualizing of GWAS results using Q-Q and Manhattan plots directly from PLINK output files
+Version: 0.1.0
+Authors@R: 
+  c(person(given = "Soumya",
+           middle = "Subhra",
+           family = "Paria",
+           role = c("aut", "cre"),
+           email = "soumya.paria@open.ac.uk"),
+    person(given = "Sarthok",
+           middle = "Rasique",
+           family = "Rahman",
+           role = c("aut"),
+           email = "sarthok@gmail.com"),
+    person(given = "Kaustubh",
+           family = "Adhikari",
+           role = c("aut"),
+           email = "kaustubh.adhikari@open.ac.uk"))
+Description: The fastman package includes two functions fastman() and fastqq(), the first one for visualizing Manhattan plots and the other for Q-Q plots
+Encoding: UTF-8
+LazyData: true
