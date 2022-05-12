@@ -20,3 +20,8 @@ Authors@R:
 Description: The fastman package includes two functions fastman() and fastqq(), the first one for visualizing Manhattan plots and the other for Q-Q plots
 Encoding: UTF-8
 LazyData: true
+Suggests: 
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr
+RoxygenNote: 7.1.2
