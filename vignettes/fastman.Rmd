@@ -386,21 +386,21 @@ dev.off()
 
 The colour schemes available for this package are provided below.
 
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/1.matlab.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/2.matlab2.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/3.Set1.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/4.Dark2.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/5.Set2.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/6.DarkSet2.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/7.reds.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/8.greens.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/9.blues.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/10.purples.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/11.greys.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/12.rgbs.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/13.all.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/14.rainbow1.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/15.rainbow2.png){width=100%}
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/colours/16.rainbow3.png){width=100%}
+![](1.matlab.png){width=100%}
+![](2.matlab2.png){width=100%}
+![](3.Set1.png){width=100%}
+![](4.Dark2.png){width=100%}
+![](5.Set2.png){width=100%}
+![](6.DarkSet2.png){width=100%}
+![](7.reds.png){width=100%}
+![](8.greens.png){width=100%}
+![](9.blues.png){width=100%}
+![](10.purples.png){width=100%}
+![](11.greys.png){width=100%}
+![](12.rgbs.png){width=100%}
+![](13.all.png){width=100%}
+![](14.rainbow1.png){width=100%}
+![](15.rainbow2.png){width=100%}
+![](16.rainbow3.png){width=100%}
 
 
