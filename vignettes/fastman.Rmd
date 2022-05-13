@@ -156,11 +156,11 @@ fastman(m)
 dev.off()
 ```
 
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md1.png){width=100%}
+![](md1.png){width=100%}
 
 Before moving into any further details, let us look into the plethora of options that this package provides us in a single plot. We will understand these options more rigorously as we go into the later parts of this exercise.
 
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/test2.png){width=100%}
+![](test2.png){width=100%}
 
 Let us compare the time of plot generation with qqman. For this purpose, we are going to use a library ```tictoc``` which will record the run time.
 ```
@@ -192,7 +192,7 @@ png("md2.png", width=10, height=6, units="in", res=300)
 fastman(m, cex=0.3, cex.axis=0.5, col="rainbow1", suggestiveline=FALSE, genomewideline=FALSE)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md2.png){width=100%}
+![](md2.png){width=100%}
 
 In this plot, if we want to show p-values till 1E-10, we can set ```maxP=10```, instead of changing the ```ylim```.
 ```
@@ -200,7 +200,7 @@ png("md2a.png", width=10, height=6, units="in", res=300)
 fastman(m, cex=0.3, cex.axis=0.5, col="rainbow1", suggestiveline=FALSE, genomewideline=FALSE, maxP=10)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md2a.png){width=100%}
+![](md2a.png){width=100%}
 
 We can now look into the SNPs of a single chromosome.
 ```
@@ -208,7 +208,7 @@ png("md3.png", width=10, height=6, units="in", res=300)
 fastman(m, chrsubset=3)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md3.png){width=100%}
+![](md3.png){width=100%}
 
 Let us say we are interested in highlighting some particular 10000 SNPs in chromosome 1. We have the name of the required SNPs in a character vector called snp1.
 ```
@@ -222,7 +222,7 @@ png("md4.png", width=10, height=6, units="in", res=300)
 fastman(m, highlight = snp1)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md4.png){width=100%}
+![](md4.png){width=100%}
 
 We can also annotate the highlighted SNPs. By default, only the top SNP in every chromosome will be annotated.
 ```
@@ -230,7 +230,7 @@ png("md7.png", width=10, height=6, units="in", res=300)
 fastman(m, highlight = snp1, annotateHighlight = TRUE)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md7.png){width=100%}
+![](md7.png){width=100%}
 
 Let us discuss the annotations in details. We have seven input parameters with respect to annotations: ```annotateHighlight```, ```annotatePval```, ```annotateTop```, ```annotationWinMb```, ```annotateN```, ```annotationCol``` and ```annotationAngle```. We have already discussed about ```annotateHighlight```. Among the rest, ```annotatePval``` and ```annotateN``` are annotation criteria, while the other four parameters are annotation modifiers.
 
@@ -240,7 +240,7 @@ png("md5.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-7)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md5.png){width=100%}
+![](md5.png){width=100%}
 
 We can see that, among the SNPs that exceed the provided threshold, only the top SNP in every chromosome is annotated. We have observed the same for ```annotateHighlight``` as well. We will come to that later, when we discuss the annotation modifiers.
 
@@ -250,7 +250,7 @@ png("md8.png", width=10, height=6, units="in", res=300)
 fastman(m, annotateN=20)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md8.png){width=100%}
+![](md8.png){width=100%}
 
 Lets go back to the observation we made while using ```annotateHighlight``` and ```annotatePval```. By default, only the top SNP in every chromosome is annotated. We can override this default rule using the annotation modifier ```annotateTop```. This modifier has a default value ```TRUE``` unless mentioned otherwise by the user. Lets consider the example where we are annotating the SNPs beyond a specified p-value threshold. By setting ```annotateTop=FALSE```, we can annotate all the SNPs beyond our threshold instead of only the top SNP per chromosome.
 ```
@@ -258,7 +258,7 @@ png("md6.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-7, annotateTop=FALSE)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md6.png){width=100%}
+![](md6.png){width=100%}
 
 Now we move on to the next annotation modifier ```annotationWinMb```. Instead of annotating the top SNP in every chromosome, if we want to annotate the top SNP within our chosen megabase window, then this is the modifier for us. For this example, lets first reduce our p-value threshold to 1E-5.
 ```
@@ -266,7 +266,7 @@ png("md9.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md9.png){width=100%}
+![](md9.png){width=100%}
 
 Now, lets specify a 5 megabase window.
 ```
@@ -274,7 +274,7 @@ png("md10.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationWinMb=5)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md10.png){width=100%}
+![](md10.png){width=100%}
 
 Among the remaining two modifiers, ```annotationCol``` sets the annotation colour and ```annotationAngle``` specifies the angle of annotation. The default colour is "gray50" and the default angle is 45 degrees. Let us illustrate with an example.
 ```
@@ -282,7 +282,7 @@ png("md11.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationCol="red", annotationAngle= 60)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md11.png){width=100%}
+![](md11.png){width=100%}
 
 As stated already, the default annotation colour in our function is "gray50". However, if the user chooses the colour palette "greys" for the plot, then the default annotation colour changes to "green4".
 ```
@@ -290,7 +290,7 @@ png("md18.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, col = "greys")
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md18.png){width=100%}
+![](md18.png){width=100%}
 
 We have the option to provide a column indicating the annotation colour intended for each SNP as a part of the input dataframe. In that case, we just need to specify the name of column in the ```annotationCol``` argument. Let us show this in the example below. In our example, the input dataframe has a separate column named ANNCOL for intended annotation colours for each SNP. Using the column we have annotated the first 4 chromosomes with green, chromosome 5-10 with red and the rest with blue as can be seen in the plot below.
 ```
@@ -298,7 +298,7 @@ png("md17.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationCol="ANNCOL")
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md17.png){width=100%}
+![](md17.png){width=100%}
 
 In case we do not want to annotate any particular set of SNPs we can just provide NA values in the ```annotationCol``` column for those SNPs. In our example, we have another column ANNCOL2 in our input dataframe that has NA values corresponding to chromosomes 3,4,5 and 6. The rest of the values of ANNCOL are exactly same as that of the column ANNCOL. We have provided NA values in this column because we do not want to annotate SNPs in chromosomes 3,4,5 and 6. Let us see what the plot looks like when we run the command using this column for ```annoationCol``` argument.
 ```
@@ -306,7 +306,7 @@ png("md19.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationCol="ANNCOL2")
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md19.png){width=100%}
+![](md19.png){width=100%}
 
 We can choose to colour only the points above our specified p-value threshold. The rest of the plot will become gray by default.
 ```
@@ -314,7 +314,7 @@ png("md12.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, colAbovePval=TRUE)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md12.png){width=100%}
+![](md12.png){width=100%}
 
 In the above plot, we can change the colour of the region below our specified threshold as well.
 ```
@@ -322,7 +322,7 @@ png("md13.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, colAbovePval=TRUE, col2="greens")
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md13.png){width=100%}
+![](md13.png){width=100%}
 
 As stated previously, our package also supports plotting of results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds). This is an incremental feature, as the qqman package does not support direct plotting of results from non-model organisms (Chromosome column for input dataset needs to be numeric for qqman).
 ```
@@ -374,7 +374,7 @@ png("md14.png", width=10, height=6, units="in", res=300)
 fastman(m)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md14.png){width=100%}
+![](md14.png){width=100%}
 
 Now let us plot the Manhattan plots for one of the scores. We must note that the scores do not need log transformations and so we must specify that while running.
 ```
@@ -382,7 +382,7 @@ png("md15.png", width=10, height=6, units="in", res=300)
 fastman(m, p = "F_A", logp = FALSE)
 dev.off()
 ```
-![](C:/Users/ssp92/Work Folders/Desktop/fastman/fastman-main/plots/md15.png){width=100%}
+![](md15.png){width=100%}
 
 The colour schemes available for this package are provided below.
 
