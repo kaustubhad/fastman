@@ -30,15 +30,6 @@ if (fix_zero) { mx=min(p1[!f]); p1[f]=mx; }
 else { p1=p1[!f]; }
 }
 
-if (!is.null(maxP)) { # if user has not specified that there should not be any maxP truncation
-  f=m$logP<=-maxP; m$logP[f]=-maxP; # logP values below -maxP are truncated to -maxP in m # memory 23.6
-  f=p1>=-log10(maxP); m$logP[f]=maxP; # logP values above maxP are truncated to maxP in m
-}
-else { # if user has specified that there should not be any maxP truncation
-  f=m$logP==Inf; m$logP[f]=sort(m$logP)[length(m$logP)-1]; # Inf values are truncated to highest finite value
-  f=m$logP==-Inf; m$logP[f]=sort(m$logP)[2]; # -Inf values are truncated to lowest finite value
-}
-
 # part 2: calcualte genomic inflation factor lambda
 
 lmb=qchisq(median(p1),1,lower.tail=F)/0.4549364;
