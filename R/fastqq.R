@@ -21,19 +21,19 @@ if (logtransform) {
   if (any(p1<0)) { warning("negative p-values found in p1. will be truncated to 0 first and then converted to minimum p-value/2."); }
   if (any(p1==0)) { warning("some p-values in p1 equal to zero. check fix_zero behavior."); }
   if (any(p1>1)) { warning("some p-values > 1 in p1. will be truncated to 1."); }
-  
+
   f=p1 < 0;
   p1[f]=0;
   f=p1 > 1;
   p1[f]=1;
-  
+
   # fix p1=zero cases, if necessary by setting them minimum
   f=(p1==0);
   if (any(f)) {
     if (fix_zero) { mx=min(p1[!f]); p1[f]=mx; }
     else { p1=p1[!f]; }
   }
-  
+
 }
 
 
@@ -48,43 +48,43 @@ if (length(p2)>1) # if user opts to compare two sets of p-values
   if (length(p2)!=length(p1)) { stop("p1 and p2 must have same length."); } #  check input
   else {
     if (!is.numeric(p2)) { stop("p2 must be numeric."); } #  check input
-    
+
     f=!is.na(p2) & !is.na(p2) & !is.nan(p2) & !is.na(p2) & !is.null(p2) & is.finite(p2);
     p2=p2[f];
-    
+
     if (logtransform) {
       if (any(p2<0)) { warning("negative p-values found in p1. will be truncated to 0 first and then converted to minimum p-value/2."); }
       if (any(p2==0)) { warning("some p-values in p2 equal to zero. check fix_zero behavior."); }
       if (any(p2>1)) { warning("some p-values > 1 in p1. will be truncated to 1."); }
-      
+
       f=(p2 < 0);
       p2[f]=0;
       f=(p2 > 1);
       p2[f]=1;
-      
+
       f=(p2==0);
       if (any(f)) {
         if (fix_zero) { mx=min(p2[!f]); p2[f]=mx; }
         else { p2=p2[!f]; }
       }
     }
-    
-    
+
+
     lmb=qchisq(median(p1),1,lower.tail=F)/qchisq(median(p2),1,lower.tail=F);
-    
+
     if (pairwisecompare)
     {
       if (logtransform)
       {
         p2=-log10(p2);
         p1=-log10(p1);
-		xlbl=expression(-log[10](italic(p2)));
-		ylbl=expression(-log[10](italic(p1)));
+        xlbl=expression(-log[10](italic(p2)));
+        ylbl=expression(-log[10](italic(p1)));
       }
 	  else
       {
         xlbl=expression(italic(p2));
-		ylbl=expression(italic(p1));
+        ylbl=expression(italic(p1));
       }
     }
     else
@@ -93,20 +93,20 @@ if (length(p2)>1) # if user opts to compare two sets of p-values
       {
         p2=-log10(sort(p2));
         p1=-log10(sort(p1));
-		xlbl=expression(-log[10](italic(p2)));
-		ylbl=expression(-log[10](italic(p1)));
+        xlbl=expression(-log[10](italic(p2)));
+        ylbl=expression(-log[10](italic(p1)));
       }
       else
       {
         p2=sort(p2);
         p1=sort(p1);
-		xlbl=expression(italic(p2));
-		ylbl=expression(italic(p1));
+        xlbl=expression(italic(p2));
+        ylbl=expression(italic(p1));
       }
     }
-    
+
   }
-  
+
 }
 else #  sort and create expected distribution
 {
@@ -114,15 +114,15 @@ else #  sort and create expected distribution
   {
     p2=-log10(ppoints(length(p1)));
     p1=-log10(sort(p1));
-	xlbl=expression(Expected ~ ~-log[10](italic(p1)));
-	ylbl=expression(Observed ~ ~-log[10](italic(p1)));
+    xlbl=expression(Expected ~ ~-log[10](italic(p1)));
+    ylbl=expression(Observed ~ ~-log[10](italic(p1)));
   }
   else
   {
     p2=ppoints(length(p1));
     p1=sort(p1);
-	xlbl=expression(Expected ~ ~italic(p1));
-	ylbl=expression(Observed ~ ~italic(p1));
+    xlbl=expression(Expected ~ ~italic(p1));
+    ylbl=expression(Observed ~ ~italic(p1));
   }
 }
 
@@ -147,53 +147,51 @@ if (length(colour)>1) # if user provides a colour vector
   else {
     m=data.frame(p1,p2,colour);
   }
-  
+
   if (speedup) # rounds round everything to 3 digits
   {
     digs=3; m$p1=round(m$p1,digits=digs); m$p2=round(m$p2,digits=digs); f=duplicated(m); m=m[!f,];
     # print('paste(nrow(m),"snps reduced to",nrow(m)));
   }
-  
+
   # remove variables to reduce memory hog before plotting
   rm(p1,p2,colour);
-  
+
   # part 5: plot
-  xlbl=expression(Expected ~ ~-log[10](italic(p1)));ylbl=expression(Observed ~ ~-log[10](italic(p1)));
-  ylbl=expression(Observed ~ ~-log[10](italic(p1)));
   if (!missing(xlab)) { xlbl=xlab; } # if xlab provided, use that instead
   if (!missing(ylab)) { ylbl=ylab; } # if ylab provided, use that instead
   fac=0.4; xbnd=c(0,max(m$p2)+fac); ybnd=c(0,max(m$p1)+fac); # add a bit of space in top corner
-  
+
   plot(m$p2,m$p1,col=m$colour,pch=20,cex=cex,cex.axis=cex.axis,las=1,xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
   abline(0,1,col = "red");
   if (lambda) { text(x=max(m$p2)*0.05,y=max(m$p1),labels=bquote(lambda == .(round(lmb,digits=4))),adj=c(0,1)); } # show labmda unless requested
-  
+
   #end
   return(lmb);
 }
 else
 {
   m=as.data.frame(cbind(p1,p2));
-  
+
   if (speedup) # rounds round everything to 3 digits
   {
     digs=3; m$p1=round(m$p1,digits=digs); m$p2=round(m$p2,digits=digs); f=duplicated(m); m=m[!f,];
     # print('paste(nrow(m),"snps reduced to",nrow(m)));
   }
-  
-  
+
+
   # remove variables to reduce memory hog before plotting
   rm(p1,p2);
-  
+
   # part 5: plot
   if (!missing(xlab)) { xlbl=xlab; } # if xlab provided, use that instead
   if (!missing(ylab)) { ylbl=ylab; } # if ylab provided, use that instead
   fac=0.4; xbnd=c(0,max(m$p2)+fac); ybnd=c(0,max(m$p1)+fac); # add a bit of space in top corner
-  
+
   plot(m$p2,m$p1,col=colour,pch=20,cex=cex,cex.axis=cex.axis,las=1,xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
   abline(0,1,col = "red");
   if (lambda) { text(x=max(m$p2)*0.05,y=max(m$p1),labels=bquote(lambda == .(round(lmb,digits=4))),adj=c(0,1)); } # show labmda unless requested
-  
+
   #end
   return(lmb);
 }
