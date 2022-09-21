@@ -10,6 +10,11 @@ An **R package** for fast and efficient visualizing of GWAS results using Q-Q an
 * **Familiar**: Has a very similar set of input arguments and code structure compared to qqman.
 * **Missing Value Handling**: Can handle missing values in the input dataframe.
 
+## Installation
+```
+devtools::install_github('kaustubhad/fastman',build_vignettes = TRUE)
+```
+
 ## Functions:
 
 ### 1. fastman
