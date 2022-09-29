@@ -10,7 +10,7 @@ fastman <- function(m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TR
 if (missing(suggestiveline)) { suggestiveline=NULL; if (logp) { suggestiveline=-log10(1e-05); } } # if suggestiveline is not provided by user then 5 is set as default value
 if (missing(genomewideline)) { genomewideline=NULL; if (logp) { genomewideline=-log10(5e-08); } } # if genomewideline is not provided by user then 8 is set as default value
 
-if (missing(annotationCol)) { annotationCol="gray50"; if (col=="greys") { annotationCol="green4"; } } # if annotationCol is not provided by user then grey is set as default
+if (missing(annotationCol)) { annotationCol="gray50"; if (length(col)==1) { if (col=="greys") { annotationCol="green4"; } } } # if annotationCol is not provided by user then grey is set as default
 if (!(annotationCol %in% colnames(m))) { m$annotationCol <- annotationCol; annotationCol <- "annotationCol"; } # if annotationCol is not a column in the data set then create a column with all entries taking the value of annotationCol provided # memory 9.7
 if (annotationAngle<0|annotationAngle>90) { warning("Text orientation angle should be between 0 & 90 degrees. reverting to default."); annotationAngle=45; } # if annotationAngle is not within 0 and 90 then it is set to 45
 
