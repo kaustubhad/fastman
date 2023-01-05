@@ -400,7 +400,7 @@ if (colAbovePval) { # Colour all hits above p-value threshold, while points belo
   if (bybp) { # show mb position instead of scaled position
     palette(col2); # setting colour palette to col2 for hits below threshold
 	plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-	axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+	axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black", gap.axis=-1);
 	f=abs(ms$logP)>=annotatePval; ms=ms[f,]; # selecting hits above threshold
 	palette(col); # setting colour palette to user defined / default for hits above threshold
 	points(ms$BPn,ms$logP,col=ms$C,pch=20,cex=cex); # plotting hits above threshold
@@ -408,7 +408,7 @@ if (colAbovePval) { # Colour all hits above p-value threshold, while points belo
   else { # typical plot
     palette(col2) # setting colour palette to col2 for hits below threshold
 	plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-	axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+	axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black", gap.axis=-1);
 	f=abs(ms$logP)>=annotatePval; ms=ms[f,]; # selecting hits above threshold
 	palette(col); # setting colour palette to user defined / default for hits above threshold
 	points(ms$BPn,ms$logP,col=ms$C,pch=20,cex=cex); # plotting hits above threshold
@@ -417,11 +417,11 @@ if (colAbovePval) { # Colour all hits above p-value threshold, while points belo
 else { # one colour scheme for the entire plot
   if (bybp) { # show mb position instead of scaled position
     plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-	axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+	axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black", gap.axis=-1);
   }
   else { # typical plot
     plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-	axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+	axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black", gap.axis=-1);
   }
 }
 
