@@ -38,7 +38,7 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **snp**	= A string denoting the column name for the SNP name (rs number). The column must be character.
 * **chrlabs**	= An optional character vector of length equal to the number of chromosomes, specifying the chromosome labels. e.g., you can provide ```c(1:22, "X", "Y", "MT")``` to convert the Plink numerical notation of 23=X, 24=Y, etc. This character vector is used to create the axis labels of the manhattan plot. So, you must sort the character vector in the order you want the chromosome labels to appear in the final plot. For example, if your input dataframe has chromosome numbers in a particular order you specifically want, and you have used the option ```sortchr = FALSE``` to preserve the order for your final plot, then your ```chrlabs``` vector should also have the same order of chromosomes.
 * **speedup** = A logical value; if TRUE, the function employs the faster method where input values at the extreme 0.2% are rounded to 3 digits, and the rest is rounded to 2 digits. The default value of this parameter is TRUE.
-* **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values is plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
+* **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
 * **col**	= A string indicating the color scheme of the plot. Defaults to “matlab”. There are various options available for user. See below for details.
 * **maxP**	= A numeric value indicating the maximum y-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
 * **sortchr**	= A logical value; if TRUE, the table is sorted by chromosome number before plotting. If not specified by user, the function takes default value TRUE.
@@ -76,13 +76,17 @@ Creates a quick quantile-quantile plot from GWAS outputs. On a typical imputed a
 
 #### Usage
 ```
-fastqq (p, speedup=TRUE, lambda=TRUE, fix_zero=TRUE, cex=0.6, cex.axis=0.9, xlab, ylab, ...)
+fastqq (p1, p2=NULL, colour, logtransform=TRUE, pairwisecompare=TRUE, speedup=TRUE, lambda=TRUE, maxP=14, fix_zero=TRUE, cex=0.6, cex.axis=0.9, xlab, ylab, ...)
 ```
 
 #### Parameters:
-* **p**	= A numeric vector of p-values.
+* **p1**	= A numeric vector of p-values. If the user has a single set of p-values, then this is the input for that. In case the user wants to compare two sets of p-values, then this argument takes the first set of p-values as input.
+* **p2**	= A numeric vector of p-values. In case the user wants to compare two sets of p-values, this argument takes the second set of p-values as input. Otherwise, this argument defaults to NULL.
+* **logtransform** = A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logtransform must be stated to be FALSE, as the default value of this parameter is TRUE.
+* **pairwisecompare** = A logical value. If the two sets of p-values are provided in pairs, the user should state this argument as TRUE. Otherwise, both sets of p-values are sorted individually and then plotted against each other.
 * **speedup**	= A logical value; if TRUE, the function employs the faster method where inputs are rounded to 3 digits.
 * **lambda** = A logical value; if TRUE, the genomic inflation factor lambda is shown on the top-left corner.
+* **maxP**	= A numeric value indicating the maximum y-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
 * **fix_zero**	= A logical value; if TRUE, zero input values are converted to half of the minimum observed input value; if FALSE, zero input values are removed.
 * **cex**	= A numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.6.
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.9.
