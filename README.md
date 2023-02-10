@@ -87,7 +87,7 @@ fastqq (p1, p2=NULL, colour, logtransform=TRUE, pairwisecompare=TRUE, speedup=TR
 * **pairwisecompare** = A logical value. If the two sets of p-values are provided in pairs, the user should state this argument as TRUE. Otherwise, both sets of p-values are sorted individually and then plotted against each other.
 * **speedup**	= A logical value; if TRUE, the function employs the faster method where inputs are rounded to 3 digits.
 * **lambda** = A logical value; if TRUE, the genomic inflation factor lambda is shown on the top-left corner.
-* **maxP**	= A numeric value indicating the maximum y-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
+* **maxP**	= A numeric value indicating the maximum negative lograrithm of p-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
 * **fix_zero**	= A logical value; if TRUE, zero input values are converted to half of the minimum observed input value; if FALSE, zero input values are removed.
 * **cex**	= A numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.6.
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.9.
