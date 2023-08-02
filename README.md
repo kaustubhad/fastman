@@ -80,8 +80,8 @@ Creates a quick quantile-quantile plot from GWAS outputs. On a typical imputed a
 
 #### Usage
 ```
-fastqq (p1, p2=NULL, colour, logtransform=TRUE, pairwisecompare=TRUE, speedup=TRUE, lambda=TRUE, maxP=14, fix_zero=TRUE,
-        cex=0.6, cex.axis=0.9, xlab, ylab, ...)
+fastqq (p1, p2=NULL, colour, logtransform=TRUE, pairwisecompare=TRUE, speedup=TRUE, lambda=TRUE, maxP=14,
+        fix_zero=TRUE, cex=0.6, cex.axis=0.9, xlab, ylab, ...)
 ```
 
 #### Parameters:
