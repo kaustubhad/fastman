@@ -105,7 +105,7 @@ fastqq (p1, p2=NULL, colour, logtransform=TRUE, pairwisecompare=TRUE, speedup=TR
 ### 3. fastman_gg
 
 #### Description
-Creates a Manhattan ggplot object directly from a PLINK assoc output (or any data frame with chromosome, position, and p-value).
+Creates a Manhattan ggplot object directly from a PLINK assoc output (or any data frame with chromosome, position, and p-value). User needs to install and load ```ggplot2``` package to use this function.
 
 #### Usage
 ```
