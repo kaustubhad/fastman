@@ -64,6 +64,7 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **cex** = A numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.4.
 * **cex.text** = A numerical vector giving the amount by which annotation text should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.4.
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.6.
+* **scattermoresize** = A 2-element integer vector to specify the size of the scattermore plot in pixels. Applicable only if ```scattermore = TRUE```. User should make sure that the value of ```scattermoresize``` parameter matches with the desired size of the final image output for best quality plots. Defaults to c(3000,1800).
 * **xlab**	= A label for the x axis, defaults to a description of x.
 * **ylab**	= A label for the y axis, defaults to a description of y.
 * **xlim**	= The x limits of the plot. The user should refrain from changing xlim in order to subset x-axis by region. The better option is to specify this in the bprange arguent, as changing xlim might lead to improper scaling and spacing in the plot.
