@@ -156,7 +156,7 @@ fastman_gg (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp
 * **ylim** = The y limits of the plot. The user should refrain from changing ylim in order to truncate y-axis. The better option is to specify the same in the maxP arguent, as changing ylim might lead to improper scaling and spacing in the plot.
 
 #### Value
-A Manhattan Plot
+A ggplot object
 
 ## Examples
 
