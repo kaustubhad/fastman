@@ -245,143 +245,142 @@ Lets find out the run time of qqman.
 
 As seen above, fastman reduces the run time drastically.
 
+We recommend using ```CairoPNG()``` command instead of regular ```png()``` for generating the plots, as it provides high-quality image outputs. It requires the user to install and load the ```Cairo``` package beforehand. Let us generate the previous plot again using ```CairoPNG()```.
+```
+CairoPNG("cmd1.png", width=10, height=6, units="in", res=300)
+fastman(m)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/plots/Normal.png)
 We can change some basic graph parameters. Let us reduce the point size (```cex=```) to 30% and reduce the font size of the axis labels (```cex.axis=```) to 50%. We can also change the colour palette (```col=```) and remove the suggestive (```suggestiveline=```) and genome-wide (```genomewideline=```) significance lines.
 ```
-png("md2.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd2.png", width=10, height=6, units="in", res=300)
 fastman(m, cex=0.3, cex.axis=0.5, col="rainbow1", suggestiveline=FALSE, genomewideline=FALSE)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md2.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd2.png)
 
 In this plot, if we want to show p-values till 1E-10, we can set ```maxP=10```, instead of changing the ```ylim```.
 ```
-png("md2a.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd2a.png", width=10, height=6, units="in", res=300)
 fastman(m, cex=0.3, cex.axis=0.5, col="rainbow1", suggestiveline=FALSE, genomewideline=FALSE, maxP=10)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md2a.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd2a.png)
 
 We can now look into the SNPs of a single chromosome.
 ```
-png("md3.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd3.png", width=10, height=6, units="in", res=300)
 fastman(m, chrsubset=3)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md3.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd3.png)
 
-Let us say we are interested in highlighting some particular 10000 SNPs in chromosome 1. We have the name of the required SNPs in a character vector called snp1.
+Let us say we are interested in highlighting some particular 3876 SNPs in chromosomes 2 and 5. We have the name of the required SNPs in a character vector called snp1.
 ```
 str(snp1)
 ```
 ```
-chr [1:10000] "rs12618998" "rs201530365" "rs13001505" "rs6742479" "rs6742805" ...
+chr [1:3876] "rs1317448" "rs66535929" "rs12616526" "rs185377827" "rs28528792" "rs13411576" "rs28473143" ...
 ```
 ```
-png("md4.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd4.png", width=10, height=6, units="in", res=300)
 fastman(m, highlight = snp1)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md4.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd4.png)
 
 We can also annotate the highlighted SNPs. By default, only the top SNP in every chromosome will be annotated.
 ```
-png("md7.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd7.png", width=10, height=6, units="in", res=300)
 fastman(m, highlight = snp1, annotateHighlight = TRUE)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md7.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd7.png)
 
 Let us discuss the annotations in details. We have seven input parameters with respect to annotations: ```annotateHighlight```, ```annotatePval```, ```annotateTop```, ```annotationWinMb```, ```annotateN```, ```annotationCol``` and ```annotationAngle```. We have already discussed about ```annotateHighlight```. Among the rest, ```annotatePval``` and ```annotateN``` are annotation criteria, while the other four parameters are annotation modifiers.
 
-As stated above, we can annotate our plot in only two ways, either by providing a p-value threshold or by providing the required number of top SNPs. The p-value threshold can be provided using the ```annotatePval``` criterion. The user can provide either p-value or the negative logarithm as an input for this parameter, whichever is convenient. For example, both 1E-7 and 7 are acceptable input values.
+As stated above, we can annotate our plot in only two ways, either by providing a p-value threshold or by providing the required number of top SNPs. The p-value threshold can be provided using the ```annotatePval``` criterion. The user can provide either p-value or the negative logarithm as an input for this parameter, whichever is convenient. For example, both 1E-5 and 5 are acceptable input values.
 ```
-png("md5.png", width=10, height=6, units="in", res=300)
-fastman(m, annotatePval=1E-7)
+CairoPNG("cmd5.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-5)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md5.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd5.png)
 
 We can see that, among the SNPs that exceed the provided threshold, only the top SNP in every chromosome is annotated. We have observed the same for ```annotateHighlight``` as well. We will come to that later, when we discuss the annotation modifiers.
 
 For now, let us explore the other annotation criterion ```annotateN```. Lets say we want to annotate the top 20 SNPs of the data.
 ```
-png("md8.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd8.png", width=10, height=6, units="in", res=300)
 fastman(m, annotateN=20)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md8.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd8.png)
 
 Lets go back to the observation we made while using ```annotateHighlight``` and ```annotatePval```. By default, only the top SNP in every chromosome is annotated. We can override this default rule using the annotation modifier ```annotateTop```. This modifier has a default value ```TRUE``` unless mentioned otherwise by the user. Lets consider the example where we are annotating the SNPs beyond a specified p-value threshold. By setting ```annotateTop=FALSE```, we can annotate all the SNPs beyond our threshold instead of only the top SNP per chromosome.
 ```
-png("md6.png", width=10, height=6, units="in", res=300)
-fastman(m, annotatePval=1E-7, annotateTop=FALSE)
+CairoPNG("cmd6.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-5, annotateTop=FALSE)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md6.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd6.png)
 
-Now we move on to the next annotation modifier ```annotationWinMb```. Instead of annotating the top SNP in every chromosome, if we want to annotate the top SNP within our chosen megabase window, then this is the modifier for us. For this example, lets first reduce our p-value threshold to 1E-5.
+Now we move on to the next annotation modifier ```annotationWinMb```. Instead of annotating the top SNP in every chromosome, if we want to annotate the top SNP within our chosen megabase window, then this is the modifier for us. Now, lets specify a 5 megabase window.
 ```
-png("md9.png", width=10, height=6, units="in", res=300)
-fastman(m, annotatePval=1E-5)
-dev.off()
-```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md9.png)
-
-Now, lets specify a 5 megabase window.
-```
-png("md10.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd10.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationWinMb=5)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md10.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd10.png)
 
 Among the remaining two modifiers, ```annotationCol``` sets the annotation colour and ```annotationAngle``` specifies the angle of annotation. The default colour is "gray50" and the default angle is 45 degrees. Let us illustrate with an example.
 ```
-png("md11.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd11.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationCol="red", annotationAngle= 60)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md11.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd11.png)
 
 As stated already, the default annotation colour in our function is "gray50". However, if the user chooses the colour palette "greys" for the plot, then the default annotation colour changes to "green4".
 ```
-png("md18.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd18.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, col = "greys")
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md18.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd18.png)
 
-We have the option to provide a column indicating the annotation colour intended for each SNP as a part of the input dataframe. In that case, we just need to specify the name of column in the ```annotationCol``` argument. Let us show this in the example below. In our example, the input dataframe has a separate column named ANNCOL for intended annotation colours for each SNP. Using the column we have annotated the first 4 chromosomes with green, chromosome 5-10 with red and the rest with blue as can be seen in the plot below.
+We have the option to provide a column indicating the annotation colour intended for each SNP as a part of the input dataframe. In that case, we just need to specify the name of column in the ```annotationCol``` argument. Let us show this in the example below. In our example, we have added a separate column named ANNCOL to the input dataframe with our intended annotation colours for each SNP. Using the column we have annotated the first 4 chromosomes with green, chromosome 5-10 with red and the rest with blue as can be seen in the plot below.
 ```
-png("md17.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd17.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationCol="ANNCOL")
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md17.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd17.png)
 
 In case we do not want to annotate any particular set of SNPs we can just provide NA values in the ```annotationCol``` column for those SNPs. In our example, we have another column ANNCOL2 in our input dataframe that has NA values corresponding to chromosomes 3,4,5 and 6. The rest of the values of ANNCOL are exactly same as that of the column ANNCOL. We have provided NA values in this column because we do not want to annotate SNPs in chromosomes 3,4,5 and 6. Let us see what the plot looks like when we run the command using this column for ```annoationCol``` argument.
 ```
-png("md19.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd19.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationCol="ANNCOL2")
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md19.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd19.png)
 
 We can choose to colour only the points above our specified p-value threshold. The rest of the plot will become gray by default.
 ```
-png("md12.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd12.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, colAbovePval=TRUE)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md12.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd12.png)
 
 In the above plot, we can change the colour of the region below our specified threshold as well.
 ```
-png("md13.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd13.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, colAbovePval=TRUE, col2="greens")
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md13.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd13.png)
 
 As stated previously, our package also supports plotting of results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds). This is an incremental feature, as the qqman package does not support direct plotting of results from non-model organisms (Chromosome column for input dataset needs to be numeric for qqman).
 ```
@@ -429,19 +428,19 @@ tail(m)
 ```
 The dataset contains P-values (column P) and two scores (F_A and F_U). From the dataset, lets generate a basic Manhattan plot for P-values.
 ```
-png("md14.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd14.png", width=10, height=6, units="in", res=300)
 fastman(m)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md14.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd14.png)
 
 Now let us plot the Manhattan plots for one of the scores. We must note that the scores do not need log transformations and so we must specify that while running.
 ```
-png("md15.png", width=10, height=6, units="in", res=300)
+CairoPNG("cmd15.png", width=10, height=6, units="in", res=300)
 fastman(m, p = "F_A", logp = FALSE)
 dev.off()
 ```
-![](https://github.com/kaustubhad/fastman/blob/main/plots/md15.png)
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd15.png)
 
 The colour schemes available for this package are provided below.
 
