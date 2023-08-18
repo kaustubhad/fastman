@@ -1,12 +1,13 @@
-fastman <- function(m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = TRUE, scattermore = FALSE, col="matlab", maxP=14, sortchr=TRUE, bybp=FALSE, chrsubset, bprange,
+fastman_gg <- function(m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = TRUE, scattermore = FALSE, repel = FALSE, col="matlab", maxP=14, sortchr=TRUE, bybp=FALSE, chrsubset, bprange,
                            highlight, annotateHighlight=FALSE, annotatePval, colAbovePval=FALSE, col2="greys", annotateTop=TRUE, annotationWinMb, annotateN, annotationCol, annotationAngle=45, 
-                           baseline=NULL, suggestiveline, genomewideline, cex=0.4, cex.text=0.4, cex.axis=0.6, scattermoresize = c(3000,1800), xlab, ylab, xlim, ylim, ...) {
+                           baseline=NULL, suggestiveline, genomewideline, cex=0.9, cex.text=1.8, cex.axis=0.6, scattermoresize = c(3000,1800), xlab, ylab, xlim, ylim, ...) {
 
 # use: source("fastman.R");
 # example: tic(); fastman(m); toc();
 # on a typical imputed assoc file, 10 million snps reduced to 170K, plotting time reduced to 737s in qqman to 60s.
 
 # part 0: initialize parameters --------------------------------------------------------------------------------------------------------------------------------------------
+if (!require('ggplot2')){return()} # check whether ggplot2 package is installed
 if (missing(suggestiveline)) { suggestiveline=NULL; if (logp) { suggestiveline=-log10(1e-05); } } # if suggestiveline is not provided by user then 5 is set as default value
 if (missing(genomewideline)) { genomewideline=NULL; if (logp) { genomewideline=-log10(5e-08); } } # if genomewideline is not provided by user then 8 is set as default value
 
@@ -37,7 +38,7 @@ if (!(chr %in% colnames(m))) { stop(paste("Column", chr, "not found!")); } # che
 if (!(bp %in% colnames(m))) { stop(paste("Column", bp, "not found!")); } # check if bp column is provided
 if (!(p %in% colnames(m))) { stop(paste("Column", p, "not found!")); } # check if p column is provided
 
-#if (!missing(chrsubset)) { if (!is.numeric(chrsubset)) { stop("Non-numeric value supplied to chrsubset."); } } # if non-numeric chrsubset is provided by user then code gives error message
+if (!missing(chrsubset)) { if (!is.numeric(chrsubset)) { stop("Non-numeric value supplied to chrsubset."); } } # if non-numeric chrsubset is provided by user then code gives error message
 
 if (!missing(bprange)) { # range of BP provided, to subset the data
   if (!is.numeric(bprange)) { stop("Supplied BP range contains non-numeric values."); } # if non-numeric bprange is provided by user then code gives error message
@@ -57,6 +58,10 @@ zerocount <- 5
 
 if (scattermore){ # check whether scattermore package is installed
   if (!require('scattermore')){return()}
+}
+
+if (repel){ # check whether ggrepel package is installed
+  if (!require('ggrepel')){return()}
 }
 
 # set color palettes; no gray in ggplot palettes
@@ -288,8 +293,8 @@ if (speedup) { # fast method: below 0.2% and above 99.8% round to 3 digits, rest
     digs=3; ms$logP=round(ms$logP,digits=digs); ms$BPn=round(ms$BPn,digits=digs); f=duplicated(ms); ms=ms[!f,]; rm(f);
   }
   else { # round lower and upper parts separately
-    if ((quants[5] - quants[4])>0.1*(quants[4] - quants[3])) { # significant right tail
-      if ((quants[1] - quants[2])>0.1*(quants[2] - quants[3])) { # significant left tail
+    if (right>0.1) { # significant right tail
+      if (left>0.1) { # significant left tail
 	    f1=ms$logP<=quants[4]&ms$logP>=quants[2];
 		digs1=2; digs2=3; digs=0*f1 + digs2; digs[f1]=digs1;
 		ms$logP=round(ms$logP,digits=digs); 
@@ -323,7 +328,7 @@ if (speedup) { # fast method: below 0.2% and above 99.8% round to 3 digits, rest
 	  }
     }
     else { # insignificant right tail
-      if ((quants[1] - quants[2])>0.1*(quants[2] - quants[3])) { # significant left tail
+      if (left>0.1) { # significant left tail
 	    f1=ms$logP>=quants[2];
 		digs1=2; digs2=3; digs=0*f1 + digs2; digs[f1]=digs1;
 		ms$logP=round(ms$logP,digits=digs); 
@@ -361,7 +366,9 @@ ms$logP=ms$logP/facy;
 
 
 # part 4: plot --------------------------------------------------------------------------------------------------------------------------------------------
-palette(col); # setting the colour palette
+col <- rep(col, 1+length(unique(ms$C))/length(col)); # setting the colour palette
+ms$C <- factor(ms$C, levels = sort(unique(ms$C)))
+if (showsnp) { msnp$C <- factor(msnp$C, levels = sort(unique(msnp$C))); }
 
 ybnd=c(floor(min(c(min(ms$logP),0))),ceiling(max(ms$logP))); # setting the y axis boundaries
 
@@ -370,30 +377,30 @@ fac=0.015*(max(ms$BPn)-min(ms$BPn));
 facy=0.015*(max(ms$logP)-min(ms$logP));
 if (numc==1) { xbnd=c(min(ms$BPn)-fac,max(ms$BPn)+fac); } else { xbnd=c(-fac,max(ms$BPn)+fac); }
 
-# extract default margin size from R and reduce it
-parmai=par("mai")*0.725; # measuring the margin size in inches
+# multipliers for ggplot top and right margins in case of text annotations, default is no change
+parxmult=1; parymult=1;
 
-if (showsnp&zerocount>0) { # if annotation is required, update margin to add extra space for text
-	plotx=par("pin")[1]; ploty=par("pin")[2]; # storing the plot width in inches within variable plotx and plot height in inches within variable ploty
-	xwidth=xbnd[2]-xbnd[1]; ywidth=ybnd[2]-ybnd[1]; # calculating the inherent width and height of the plot
+# calculate the multipliers if text annotation required
+# if (showsnp&zerocount>0) { # if annotation is required
+	# parmai=par("mai")*0.725; # measuring the margin size in inches, reduce the default by a bit
+	# plotx=par("pin")[1]; ploty=par("pin")[2]; # storing the plot width in inches within variable plotx and plot height in inches within variable ploty
+	# xwidth=xbnd[2]-xbnd[1]; ywidth=ybnd[2]-ybnd[1]; # calculating the inherent width and height of the plot
 
-	m2=msnp;
-	if (annotateHighlight&annotateTop) {m2=msnp2;}
-	strgap=strheight("A",units="inches",cex=cex.text);
-	m2$strwidth=strwidth(m2$SNP,units="inches",cex=cex.text)+strheight(m2$SNP,units="inches",cex=cex.text); # measuring the dimensions of the SNP texts in inches
-	m2$width=m2$strwidth*cospi(annotationAngle/180); # measuring the x component of the SNP text in inches
-	m2$height=m2$strwidth*sinpi(annotationAngle/180); # measuring the y component of the SNP text in inches
-	m2$xmax=m2$BPn+fac/7+m2$width*xwidth/plotx; # measuring the maximum width required for SNP texts in plot X units
-	m2$ymax=m2$logP+facy/7+m2$height*ywidth/ploty; # measuring the maximum height required for SNP text in plot Y units
+	# strgap=strheight("A",units="inches",cex=cex.text);
+	# m2=msnp;
+	# if (annotateHighlight&annotateTop) {m2=msnp2;}
+	# m2$strwidth=strwidth(m2$SNP,units="inches",cex=cex.text)+strheight(m2$SNP,units="inches",cex=cex.text); # measuring the dimensions of the SNP texts in inches
+	# m2$width=m2$strwidth*cospi(annotationAngle/180); # measuring the x component of the SNP text in inches
+	# m2$height=m2$strwidth*sinpi(annotationAngle/180); # measuring the y component of the SNP text in inches
+	# m2$xmax=m2$BPn+fac/7+m2$width*xwidth/plotx; # measuring the maximum width required for SNP texts in plot X units
+	# m2$ymax=m2$logP+fac/7+m2$height*ywidth/ploty; # measuring the maximum height required for SNP text in plot Y units
 
-	extrax=max( (max(m2$xmax)-xbnd[2])*plotx/xwidth - 0.8*parmai[4] , 0); # measuring the extra width required from margin in inches
-	extray=max( (max(m2$ymax)-ybnd[2])*ploty/ywidth - 0.8*parmai[3] , 0); # measuring the extra height required from margin in inches
+	# extrax=1.7*max( (max(m2$xmax)-xbnd[2])*plotx/xwidth - 0.8*parmai[4] , 0); # measuring the extra width required from margin in inches
+	# extray=1.7*max( (max(m2$ymax)-ybnd[2])*ploty/ywidth - 0.8*parmai[3] , 0); # measuring the extra height required from margin in inches
 
-	parmai[3]=parmai[3]+2*extray; parmai[4]=parmai[4]+2*extrax; # adding the extra width and height
-}
-
-par(mai=parmai); # setting the final margin
-par(mgp=par('mgp')*0.5)
+	# parxmult=(parmai[4]+extrax)/parmai[4]; # multiplier for ggplot right margin to add extra space
+	# parymult=(parmai[3]+extray)/parmai[3]; # multiplier for ggplot top margin to add extra space
+# }
 
 if (!missing(xlim)) { xbnd=xlim; }
 if (!missing(ylim)) { ybnd=ylim; }
@@ -406,100 +413,250 @@ if (!missing(xlab)) { xlbl=xlab; }
 if (!missing(ylab)) { ylbl=ylab; }
 
 par(xpd = NA)
+
 if (scattermore) {
   if (colAbovePval) { # Colour all hits above p-value threshold, while points below are col2
+    col2 <- rep(col2, 1+length(unique(ms$C))/length(col2)); # setting colour palette to col2 for hits below threshold
     if (bybp) { # show mb position instead of scaled position
-      palette(col2); # setting colour palette to col2 for hits below threshold
-      scattermoreplot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=16*cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,size=scattermoresize,...);
-      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
-      f=abs(ms$logP)>=annotatePval; ms=ms[f,]; # selecting hits above threshold
-      palette(col); # setting colour palette to user defined / default for hits above threshold
-      points(ms$BPn,ms$logP,col=ms$C,pch=20,cex=cex); # plotting hits above threshold
+      p <- ggplot(data = ms, aes(x = BPn, y = logP, color = C)) +
+        geom_scattermore(shape = 20, pointsize = cex, pixels = scattermoresize) + scale_color_manual(values = col) +
+        labs(x = xlbl, y = ylbl) + theme_minimal() +
+        theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+              axis.title = element_text(),
+              panel.border = element_blank(),
+              panel.grid = element_blank()) +
+        scale_x_continuous(limits = xbnd, expand = c(0, 0), guide = guide_axis(check.overlap = TRUE)) +
+        scale_y_continuous(limits = ybnd, expand = c(0, 0)) + theme(axis.ticks.x = element_line(color = "black"), axis.line.x = element_line(color = NA)) +
+        theme(axis.ticks.y = element_line(color = "black"), axis.line.y = element_line(color = "black"), plot.margin = margin(30*parymult, 20*parxmult, 5, 5, "points"), 
+              axis.title.x = element_text(margin = margin(7, 7, 7, 7, "points")), axis.title.y = element_text(margin = margin(7, 7, 7, 7, "points"))) + 
+        theme(legend.position="none")
+      f=abs(ms$logP)<annotatePval; ms=ms[f,]; # selecting hits below threshold
+      unique_chromosomes <- sort(unique(ms$C)) # Get the unique chromosome numbers in the dataset
+      alternate_chromosomes <- unique_chromosomes[seq_along(unique_chromosomes) %% 2 == 1] # Get the alternate chromosome numbers
+      p <- p + geom_scattermore(data = ms[ms$C %in% alternate_chromosomes, ], aes(x = BPn, y = logP), shape = 20, pointsize = cex, pixels = scattermoresize, inherit.aes = FALSE, color = col2[1]); # plotting hits below threshold for odd chromosomes
+      alternate_chromosomes <- unique_chromosomes[seq_along(unique_chromosomes) %% 2 == 0] # Get the alternate chromosome numbers
+      p <- p + geom_scattermore(data = ms[ms$C %in% alternate_chromosomes, ], aes(x = BPn, y = logP), shape = 20, pointsize = cex, pixels = scattermoresize, inherit.aes = FALSE, color = col2[2]); # plotting hits below threshold for odd chromosomes
     }
     else { # typical plot
-      palette(col2) # setting colour palette to col2 for hits below threshold
-      scattermoreplot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=16*cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,size=scattermoresize,...);
-      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
-      f=abs(ms$logP)>=annotatePval; ms=ms[f,]; # selecting hits above threshold
-      palette(col); # setting colour palette to user defined / default for hits above threshold
-      points(ms$BPn,ms$logP,col=ms$C,pch=20,cex=cex); # plotting hits above threshold
+      p <- ggplot(ms, aes(x = BPn, y = logP, color = C)) + 
+        geom_scattermore(shape = 20, pointsize = cex, pixels = scattermoresize) + scale_color_manual(values = col) + 
+        labs(x = xlbl, y = ylbl) + theme_minimal() +
+        theme(axis.text.x = element_text(angle = 0, vjust = 0.5), 
+              axis.title = element_text(),
+              panel.border = element_blank(),
+              panel.grid = element_blank()) +
+        scale_x_continuous(limits = xbnd, expand = c(0, 0), breaks = cmat$midpf, labels = chrlabs, guide = guide_axis(check.overlap = TRUE)) +
+        scale_y_continuous(limits = ybnd, expand = c(0, 0)) + theme(axis.ticks.x = element_line(color = "black"), axis.line.x = element_line(color = NA)) +
+        theme(axis.ticks.y = element_line(color = "black"), axis.line.y = element_line(color = "black"), plot.margin = margin(30*parymult, 20*parxmult, 5, 5, "points"), 
+              axis.title.x = element_text(margin = margin(7, 7, 7, 7, "points")), axis.title.y = element_text(margin = margin(7, 7, 7, 7, "points"))) + 
+        theme(legend.position="none")
+      f=abs(ms$logP)<annotatePval; ms=ms[f,]; # selecting hits below threshold
+      unique_chromosomes <- sort(unique(ms$C)) # Get the unique chromosome numbers in the dataset
+      alternate_chromosomes <- unique_chromosomes[seq_along(unique_chromosomes) %% 2 == 1] # Get the alternate chromosome numbers
+      p <- p + geom_scattermore(data = ms[ms$C %in% alternate_chromosomes, ], aes(x = BPn, y = logP), shape = 20, pointsize = cex, pixels = scattermoresize, inherit.aes = FALSE, color = col2[1]); # plotting hits below threshold for odd chromosomes
+      alternate_chromosomes <- unique_chromosomes[seq_along(unique_chromosomes) %% 2 == 0] # Get the alternate chromosome numbers
+      p <- p + geom_scattermore(data = ms[ms$C %in% alternate_chromosomes, ], aes(x = BPn, y = logP), shape = 20, pointsize = cex, pixels = scattermoresize, inherit.aes = FALSE, color = col2[2]); # plotting hits below threshold for odd chromosomes
     }
   }
   else { # one colour scheme for the entire plot
     if (bybp) { # show mb position instead of scaled position
-      scattermoreplot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=16*cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,size=scattermoresize,...);
-      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      p <- ggplot(ms, aes(x = BPn, y = logP, color = C)) +
+        geom_scattermore(shape = 20, pointsize = cex, pixels = scattermoresize) + scale_color_manual(values = col) +
+        labs(x = xlbl, y = ylbl) + theme_minimal() +
+        theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+              axis.title = element_text(),
+              panel.border = element_blank(),
+              panel.grid = element_blank()) +
+        scale_x_continuous(limits = xbnd, expand = c(0, 0), guide = guide_axis(check.overlap = TRUE)) +
+        scale_y_continuous(limits = ybnd, expand = c(0, 0)) + theme(axis.ticks.x = element_line(color = "black"), axis.line.x = element_line(color = NA)) +
+        theme(axis.ticks.y = element_line(color = "black"), axis.line.y = element_line(color = "black"), plot.margin = margin(30*parymult, 20*parxmult, 5, 5, "points"), 
+              axis.title.x = element_text(margin = margin(7, 7, 7, 7, "points")), axis.title.y = element_text(margin = margin(7, 7, 7, 7, "points"))) + 
+        theme(legend.position="none")
     }
     else { # typical plot
-      scattermoreplot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=16*cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,size=scattermoresize,...);
-      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      p <- ggplot(ms, aes(x = BPn, y = logP, color = C)) +
+        geom_scattermore(shape = 20, pointsize = cex, pixels = scattermoresize) + scale_color_manual(values = col) +
+        labs(x = xlbl, y = ylbl) + theme_minimal() +
+        theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+              axis.title = element_text(),
+              panel.border = element_blank(),
+              panel.grid = element_blank()) +
+        scale_x_continuous(limits = xbnd, expand = c(0, 0), breaks = cmat$midpf, labels = chrlabs, guide = guide_axis(check.overlap = TRUE)) + 
+        scale_y_continuous(limits = ybnd, expand = c(0, 0)) + theme(axis.ticks.x = element_line(color = "black"), axis.line.x = element_line(color = NA)) +
+        theme(axis.ticks.y = element_line(color = "black"), axis.line.y = element_line(color = "black"), plot.margin = margin(30*parymult, 20*parxmult, 5, 5, "points"), 
+              axis.title.x = element_text(margin = margin(7, 7, 7, 7, "points")), axis.title.y = element_text(margin = margin(7, 7, 7, 7, "points"))) + 
+        theme(legend.position="none")
     }
   }
 }
 else {
   if (colAbovePval) { # Colour all hits above p-value threshold, while points below are col2
+    col2 <- rep(col2, 1+length(unique(ms$C))/length(col2)); # setting colour palette to col2 for hits below threshold
     if (bybp) { # show mb position instead of scaled position
-      palette(col2); # setting colour palette to col2 for hits below threshold
-      plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
-      f=abs(ms$logP)>=annotatePval; ms=ms[f,]; # selecting hits above threshold
-      palette(col); # setting colour palette to user defined / default for hits above threshold
-      points(ms$BPn,ms$logP,col=ms$C,pch=20,cex=cex); # plotting hits above threshold
+      p <- ggplot(data = ms, aes(x = BPn, y = logP, color = C)) +
+        geom_point(shape = 20, size = cex) + scale_color_manual(values = col) +
+        labs(x = xlbl, y = ylbl) + theme_minimal() +
+        theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+              axis.title = element_text(),
+              panel.border = element_blank(),
+              panel.grid = element_blank()) +
+        scale_x_continuous(limits = xbnd, expand = c(0, 0), guide = guide_axis(check.overlap = TRUE)) +
+        scale_y_continuous(limits = ybnd, expand = c(0, 0)) + theme(axis.ticks.x = element_line(color = "black"), axis.line.x = element_line(color = NA)) +
+        theme(axis.ticks.y = element_line(color = "black"), axis.line.y = element_line(color = "black"), plot.margin = margin(30*parymult, 20*parxmult, 5, 5, "points"), 
+              axis.title.x = element_text(margin = margin(7, 7, 7, 7, "points")), axis.title.y = element_text(margin = margin(7, 7, 7, 7, "points"))) + 
+        theme(legend.position="none")
+      f=abs(ms$logP)<annotatePval; ms=ms[f,]; # selecting hits below threshold
+      unique_chromosomes <- sort(unique(ms$C)) # Get the unique chromosome numbers in the dataset
+      alternate_chromosomes <- unique_chromosomes[seq_along(unique_chromosomes) %% 2 == 1] # Get the alternate chromosome numbers
+      p <- p + geom_point(data = ms[ms$C %in% alternate_chromosomes, ], aes(x = BPn, y = logP), shape = 20, size = cex, inherit.aes = FALSE, color = col2[1]); # plotting hits below threshold for odd chromosomes
+      alternate_chromosomes <- unique_chromosomes[seq_along(unique_chromosomes) %% 2 == 0] # Get the alternate chromosome numbers
+      p <- p + geom_point(data = ms[ms$C %in% alternate_chromosomes, ], aes(x = BPn, y = logP), shape = 20, size = cex, inherit.aes = FALSE, color = col2[2]); # plotting hits below threshold for odd chromosomes
     }
     else { # typical plot
-      palette(col2) # setting colour palette to col2 for hits below threshold
-      plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
-      f=abs(ms$logP)>=annotatePval; ms=ms[f,]; # selecting hits above threshold
-      palette(col); # setting colour palette to user defined / default for hits above threshold
-      points(ms$BPn,ms$logP,col=ms$C,pch=20,cex=cex); # plotting hits above threshold
+      p <- ggplot(ms, aes(x = BPn, y = logP, color = C)) + 
+        geom_point(shape = 20, size = cex) + scale_color_manual(values = col) + 
+        labs(x = xlbl, y = ylbl) + theme_minimal() +
+        theme(axis.text.x = element_text(angle = 0, vjust = 0.5), 
+              axis.title = element_text(),
+              panel.border = element_blank(),
+              panel.grid = element_blank()) +
+        scale_x_continuous(limits = xbnd, expand = c(0, 0), breaks = cmat$midpf, labels = chrlabs, guide = guide_axis(check.overlap = TRUE)) +
+        scale_y_continuous(limits = ybnd, expand = c(0, 0)) + theme(axis.ticks.x = element_line(color = "black"), axis.line.x = element_line(color = NA)) +
+        theme(axis.ticks.y = element_line(color = "black"), axis.line.y = element_line(color = "black"), plot.margin = margin(30*parymult, 20*parxmult, 5, 5, "points"), 
+              axis.title.x = element_text(margin = margin(7, 7, 7, 7, "points")), axis.title.y = element_text(margin = margin(7, 7, 7, 7, "points"))) + 
+        theme(legend.position="none")
+      f=abs(ms$logP)<annotatePval; ms=ms[f,]; # selecting hits below threshold
+      unique_chromosomes <- sort(unique(ms$C)) # Get the unique chromosome numbers in the dataset
+      alternate_chromosomes <- unique_chromosomes[seq_along(unique_chromosomes) %% 2 == 1] # Get the alternate chromosome numbers
+      p <- p + geom_point(data = ms[ms$C %in% alternate_chromosomes, ], aes(x = BPn, y = logP), shape = 20, size = cex, inherit.aes = FALSE, color = col2[1]); # plotting hits below threshold for odd chromosomes
+      alternate_chromosomes <- unique_chromosomes[seq_along(unique_chromosomes) %% 2 == 0] # Get the alternate chromosome numbers
+      p <- p + geom_point(data = ms[ms$C %in% alternate_chromosomes, ], aes(x = BPn, y = logP), shape = 20, size = cex, inherit.aes = FALSE, color = col2[2]); # plotting hits below threshold for odd chromosomes
     }
   }
   else { # one colour scheme for the entire plot
     if (bybp) { # show mb position instead of scaled position
-      plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      p <- ggplot(ms, aes(x = BPn, y = logP, color = C)) +
+        geom_point(shape = 20, size = cex) + scale_color_manual(values = col) +
+        labs(x = xlbl, y = ylbl) + theme_minimal() +
+        theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+              axis.title = element_text(),
+              panel.border = element_blank(),
+              panel.grid = element_blank()) +
+        scale_x_continuous(limits = xbnd, expand = c(0, 0), guide = guide_axis(check.overlap = TRUE)) +
+        scale_y_continuous(limits = ybnd, expand = c(0, 0)) + theme(axis.ticks.x = element_line(color = "black"), axis.line.x = element_line(color = NA)) +
+        theme(axis.ticks.y = element_line(color = "black"), axis.line.y = element_line(color = "black"), plot.margin = margin(30*parymult, 20*parxmult, 5, 5, "points"), 
+              axis.title.x = element_text(margin = margin(7, 7, 7, 7, "points")), axis.title.y = element_text(margin = margin(7, 7, 7, 7, "points"))) + 
+        theme(legend.position="none")
     }
     else { # typical plot
-      plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      p <- ggplot(ms, aes(x = BPn, y = logP, color = C)) +
+        geom_point(shape = 20, size = cex) + scale_color_manual(values = col) +
+        labs(x = xlbl, y = ylbl) + theme_minimal() +
+        theme(axis.text.x = element_text(angle = 0, vjust = 0.5),
+              axis.title = element_text(),
+              panel.border = element_blank(),
+              panel.grid = element_blank()) +
+        scale_x_continuous(limits = xbnd, expand = c(0, 0), breaks = cmat$midpf, labels = chrlabs, guide = guide_axis(check.overlap = TRUE)) + 
+        scale_y_continuous(limits = ybnd, expand = c(0, 0)) + theme(axis.ticks.x = element_line(color = "black"), axis.line.x = element_line(color = NA)) +
+        theme(axis.ticks.y = element_line(color = "black"), axis.line.y = element_line(color = "black"), plot.margin = margin(30*parymult, 20*parxmult, 5, 5, "points"), 
+              axis.title.x = element_text(margin = margin(7, 7, 7, 7, "points")), axis.title.y = element_text(margin = margin(7, 7, 7, 7, "points"))) + 
+        theme(legend.position="none")
     }
   }
 }
 
-if (is.numeric(baseline)) { abline(h=baseline,col="black", xpd=FALSE); } # plotting baseline
-if (is.numeric(suggestiveline)) { abline(h=suggestiveline,col="blue", xpd=FALSE); if (length(suggestiveline)==1&sum(ms$logP<0)>0) { abline(h=-suggestiveline,col="blue", xpd=FALSE) }; } # plotting suggestiveline
-if (is.numeric(genomewideline)) { abline(h=genomewideline,col="red", xpd=FALSE); if (length(genomewideline)==1&sum(ms$logP<0)>0) { abline(h=-genomewideline,col="red", xpd=FALSE) }; } # plotting genomewideline
 
+
+
+ybreaks <- union(ggplot_build(p)$layout$panel_params[[1]]$y$breaks,ybnd)
+ybreaks <- ybreaks[complete.cases(ybreaks)]
+p <- p + scale_y_continuous(breaks = ybreaks, expand = c(0, 0))
+
+if (is.numeric(baseline)) { p <- p + geom_hline(yintercept = baseline, color = "black"); } # plotting baseline
+if (is.numeric(suggestiveline)) { p <- p + geom_hline(yintercept = suggestiveline, color = "blue"); if (length(suggestiveline)==1&sum(ms$logP<0)>0) { p <- p + geom_hline(yintercept = -suggestiveline, color = "blue") }; } # plotting suggestiveline
+if (is.numeric(genomewideline)) { p <- p + geom_hline(yintercept = genomewideline, color = "red"); if (length(genomewideline)==1&sum(ms$logP<0)>0) { p <- p + geom_hline(yintercept = -genomewideline, color = "red") }; } # plotting genomewideline
 
 # part 5: plot highlights / annotations if necessary --------------------------------------------------------------------------------------------------------------------------------------------
 
 adj=c(0,0);
 if (annotationAngle==0) { adj=c(0,0.5); }
 
-if (!missing(highlight)) { # show highlighted snps
+if (!missing(highlight)) {
   if (scattermore) {
-    points(scattermore(msnp$BPn,msnp$logP,col=msnp$annotationCol,pch=20,cex=cex)); # plotting highlighted points
+    p <- p + geom_scattermore(data = msnp, aes(x = BPn, y = logP), shape = 20, pointsize = cex, pixels = scattermoresize, inherit.aes = FALSE, color = msnp$annotationCol)
   }
   else {
-    points(msnp$BPn,msnp$logP,col=msnp$annotationCol,pch=20,cex=cex); # plotting highlighted points
+    p <- p + geom_point(data = msnp, aes(x = BPn, y = logP), shape = 20, cex = cex, inherit.aes = FALSE, color = msnp$annotationCol)
   }
-  if (annotateHighlight) { # annotate some/all of listed snps
+  
+  
+  if (annotateHighlight) {
     if (annotateTop) {msnp=msnp2}
-    if (!missing(annotatePval)) { 
-      f=msnp$logP>=annotatePval; if (zerocount>0) { m2=msnp[f,]; text(x=m2$BPn+fac/7,y=m2$logP+facy/7,labels=m2$SNP,adj=adj,srt=annotationAngle,col=m2$annotationCol,cex=cex.text,...); }; 
-      f=msnp$logP<=-annotatePval; if (zerocount>0) { m2=msnp[f,]; text(x=m2$BPn+fac/7,y=m2$logP+facy/7,labels=m2$SNP,adj=adj,srt=-annotationAngle,col=m2$annotationCol,cex=cex.text,...); } } # only snps above threshold
-    else { m2=msnp; text(x=m2$BPn+fac/7,y=m2$logP+facy/7,labels=m2$SNP,adj=adj,srt=annotationAngle,col=m2$annotationCol,cex=cex.text,...); } # all snps
+    if (!missing(annotatePval)) {
+      f <- msnp$logP >= annotatePval
+      if (zerocount > 0) {
+        m2 <- msnp[f,]
+        if (repel) {
+          p <- p + geom_text_repel(data = m2, aes(x = BPn, y = logP, label = SNP), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+        }
+        else {
+          p <- p + geom_text(data = m2, aes(x = BPn+fac/7, y = logP+facy/7, label = SNP, angle = annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+        }
+      }
+      f <- msnp$logP <= -annotatePval
+      if (zerocount > 0) {
+        m2 <- msnp[f,]
+        if (repel){
+          p <- p + geom_text_repel(data = m2, aes(x = BPn, y = logP, label = SNP, angle = -annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+        }
+        else {
+          p <- p + geom_text(data = m2, aes(x = BPn+fac/7, y = logP+facy/7, label = SNP, angle = -annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+        }
+      }
+    } else {
+      m2 <- msnp
+      if (repel){
+        p <- p + geom_text_repel(data = m2, aes(x = BPn, y = logP, label = SNP), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+      }
+      else {
+        p <- p + geom_text(data = m2, aes(x = BPn+fac/7, y = logP+facy/7, label = SNP, angle = annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+      }
+    }
   }
 }
 
-if (!missing(annotateN)) { # not using highlight list, but annotatePval or annotateN instead
-  m2=msnp; text(x=m2$BPn+fac/7,y=m2$logP+facy/7,labels=m2$SNP,adj=adj,srt=annotationAngle,col=m2$annotationCol,cex=cex.text,...); # annotating the selected snps
+if (!missing(annotateN)) {
+  if (repel){
+    p <- p + geom_text_repel(data = msnp, aes(x = BPn, y = logP, label = SNP), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = msnp$annotationCol)
+  }
+  else {
+    p <- p + geom_text(data = msnp, aes(x = BPn+fac/7, y = logP+facy/7, label = SNP, angle = annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = msnp$annotationCol)
+  }
 }
 
-if (!missing(annotatePval)&(zerocount>0)) { # not using highlight list, but annotatePval or annotateN instead
-  f=msnp$logP>0; m2=msnp[f,]; text(x=m2$BPn+fac/7,y=m2$logP+facy/7,labels=m2$SNP,adj=adj,srt=annotationAngle,col=m2$annotationCol,cex=cex.text,...); # annotating the selected snps on the positive side
-  if (sum(msnp$logP<0)>0) { f=msnp$logP<0; m2=msnp[f,]; text(x=m2$BPn+fac/7,y=m2$logP+facy/7,labels=m2$SNP,adj=adj,srt=-annotationAngle,col=m2$annotationCol,cex=cex.text,...); } # annotating the selected snps on the negative side
+if (!missing(annotatePval) & (zerocount > 0)) {
+  f <- msnp$logP > 0
+  m2 <- msnp[f,]
+  if (repel){
+    p <- p + geom_text_repel(data = m2, aes(x = BPn, y = logP, label = SNP), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+  }
+  else {
+    p <- p + geom_text(data = m2, aes(x = BPn+fac/7, y = logP+facy/7, label = SNP, angle = annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+  }
+  
+  if (sum(msnp$logP < 0) > 0) {
+    f <- msnp$logP < 0
+    m2 <- msnp[f,]
+    if (repel){
+      p <- p + geom_text_repel(data = m2, aes(x = BPn, y = logP, label = SNP), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+    }
+    else {
+      p <- p + geom_text(data = m2, aes(x = BPn+fac/7, y = logP+facy/7, label = SNP, angle = -annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+    }
+  }
 }
+p <- p + coord_cartesian(clip = "off")
+return(p)
+
 
 }
