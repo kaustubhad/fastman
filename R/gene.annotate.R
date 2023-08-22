@@ -1,4 +1,4 @@
-gene.annotate <- function(data, genelist, chr = "CHR", bp = "BP", sep="|", border=0) {
+gene.annotate <- function(data, build, chr = "CHR", bp = "BP", sep="|", border=0) {
 
 # data could be the data frame from an gwas result assoc file
 # genelist should follow the Plink gene-list style, with 4 columns: chromosome, start, end, gene name
@@ -9,7 +9,17 @@ gene.annotate <- function(data, genelist, chr = "CHR", bp = "BP", sep="|", borde
 # part 1: define the core function to annotate genes
 gene_member <- function(pos,gc,sep) { f=(gc$start<=pos)&(gc$end>=pos); if (any(f)) { return(paste0(gc$gene[f],collapse=sep)); } else { return(NA); } }
 
-# part 2: select columns and prepare data
+# part 2: read genelist from provided build
+if (is.numeric(build)) { build <- ifelse(build > 30, build - 18, build); genelist_name <- paste("hg", build, sep = ""); } # if numeric build input then create genelist_name from build number
+else { genelist_name <- build; } # if alphanumeric build input then build input is taken as genelist name
+
+if (!exists(genelist_name)) {
+  stop("Invalid build") # check whether genelist name exists
+}
+
+genelist <- get(genelist_name)
+
+# part 3: select columns and prepare data
 colnames(genelist)=c("chr","start","end","gene");
 
 # adjust boundary of genes if necessary
