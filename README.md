@@ -11,8 +11,13 @@ An **R package** for fast and efficient visualizing of GWAS results using Q-Q an
 * **Missing Value Handling**: Can handle missing values in the input dataframe.
 
 ## Installation
+If you are using Rstudio you can use the following code to install the package.
 ```
 devtools::install_github('kaustubhad/fastman',build_vignettes = TRUE)
+```
+If you are not using Rstudio, we recommend installing the package without building the vignette.
+```
+devtools::install_github('kaustubhad/fastman',build_vignettes = FALSE)
 ```
 
 ## Functions:
