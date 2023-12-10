@@ -74,7 +74,7 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **ylab**	= A label for the y axis, defaults to a description of y.
 * **xlim**	= The x limits of the plot. The user should refrain from changing xlim in order to subset x-axis by region. The better option is to specify this in the bprange arguent, as changing xlim might lead to improper scaling and spacing in the plot.
 * **ylim** = The y limits of the plot. The user should refrain from changing ylim in order to truncate y-axis. The better option is to specify the same in the maxP arguent, as changing ylim might lead to improper scaling and spacing in the plot.
-* **gap.axis** = A numeric factor that determines the minimum gaps between axis labels; defaults to NA. The default value might lead to labels of the smaller chromosomes being dropped in some cases; if so, setting gap.axis = -2 can help to display all the labels. But if the figure width is not sufficiently large, or if the chromosome/contig names are large, this can cause overlap in the text.
+* **gap.axis** = A numeric factor that determines the minimum gaps between axis labels; defaults to NA to use R's default settings. The default value might lead to labels of the smaller chromosomes being dropped in some cases; if so, setting gap.axis = -2 can help to display all the labels. But if the figure width is not sufficiently large, or if the chromosome/contig names are large, this can cause overlap in the text.
 
 #### Value
 A Manhattan Plot
