@@ -1,6 +1,7 @@
 fastman <- function(m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = TRUE, scattermore = FALSE, col="matlab", maxP=14, sortchr=TRUE, bybp=FALSE, chrsubset, bprange,
                            highlight, annotateHighlight=FALSE, annotatePval, colAbovePval=FALSE, col2="greys", annotateTop=TRUE, annotationWinMb, annotateN, annotationCol, annotationAngle=45, 
-                           baseline=NULL, suggestiveline, genomewideline, cex=0.4, cex.text=0.4, cex.axis=0.6, scattermoresize = c(3000,1800), xlab, ylab, xlim, ylim, ...) {
+                           baseline=NULL, suggestiveline, genomewideline, cex=0.4, cex.text=0.4, cex.axis=0.6, scattermoresize = c(3000,1800), geneannotate = FALSE, closestgene = TRUE, 
+						   build, sep="|", border=0, xlab, ylab, xlim, ylim, gap.axis=NA, ...) {
 
 # use: source("fastman.R");
 # example: tic(); fastman(m); toc();
@@ -58,6 +59,23 @@ zerocount <- 5
 if (scattermore){ # check whether scattermore package is installed
   if (!require('scattermore')){return()}
 }
+
+if (geneannotate){ # read genelist from provided build
+  if (is.numeric(build)) { build <- ifelse(build > 30, build - 18, build); genelist_name <- paste("hg", build, sep = ""); } # if numeric build input then create genelist_name from build number
+  else { genelist_name <- build; } # if alphanumeric build input then build input is taken as genelist name
+  
+  if (!exists(genelist_name)) {
+    stop("Invalid build") # check whether genelist name exists
+  }
+  genelist <- get(genelist_name)
+  
+  colnames(genelist)=c("chr","start","end","gene"); # select columns and prepare data
+
+  # adjust boundary of genes if necessary
+  genelist$start=genelist$start-border;
+  genelist$end=genelist$end+border;
+}
+
 
 # set color palettes; no gray in ggplot palettes
 if (length(col)==1) {
@@ -411,7 +429,7 @@ if (scattermore) {
     if (bybp) { # show mb position instead of scaled position
       palette(col2); # setting colour palette to col2 for hits below threshold
       scattermoreplot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=16*cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,size=scattermoresize,...);
-      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black",gap.axis=gap.axis);
       f=abs(ms$logP)>=annotatePval; ms=ms[f,]; # selecting hits above threshold
       palette(col); # setting colour palette to user defined / default for hits above threshold
       points(ms$BPn,ms$logP,col=ms$C,pch=20,cex=cex); # plotting hits above threshold
@@ -419,7 +437,7 @@ if (scattermore) {
     else { # typical plot
       palette(col2) # setting colour palette to col2 for hits below threshold
       scattermoreplot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=16*cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,size=scattermoresize,...);
-      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black",gap.axis=gap.axis);
       f=abs(ms$logP)>=annotatePval; ms=ms[f,]; # selecting hits above threshold
       palette(col); # setting colour palette to user defined / default for hits above threshold
       points(ms$BPn,ms$logP,col=ms$C,pch=20,cex=cex); # plotting hits above threshold
@@ -428,11 +446,11 @@ if (scattermore) {
   else { # one colour scheme for the entire plot
     if (bybp) { # show mb position instead of scaled position
       scattermoreplot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=16*cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,size=scattermoresize,...);
-      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black",gap.axis=gap.axis);
     }
     else { # typical plot
       scattermoreplot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=16*cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,size=scattermoresize,...);
-      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black",gap.axis=gap.axis);
     }
   }
 }
@@ -441,7 +459,7 @@ else {
     if (bybp) { # show mb position instead of scaled position
       palette(col2); # setting colour palette to col2 for hits below threshold
       plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black",gap.axis=gap.axis);
       f=abs(ms$logP)>=annotatePval; ms=ms[f,]; # selecting hits above threshold
       palette(col); # setting colour palette to user defined / default for hits above threshold
       points(ms$BPn,ms$logP,col=ms$C,pch=20,cex=cex); # plotting hits above threshold
@@ -449,7 +467,7 @@ else {
     else { # typical plot
       palette(col2) # setting colour palette to col2 for hits below threshold
       plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black",gap.axis=gap.axis);
       f=abs(ms$logP)>=annotatePval; ms=ms[f,]; # selecting hits above threshold
       palette(col); # setting colour palette to user defined / default for hits above threshold
       points(ms$BPn,ms$logP,col=ms$C,pch=20,cex=cex); # plotting hits above threshold
@@ -458,11 +476,11 @@ else {
   else { # one colour scheme for the entire plot
     if (bybp) { # show mb position instead of scaled position
       plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      axis(side=1,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black",gap.axis=gap.axis);
     }
     else { # typical plot
       plot(ms$BPn,ms$logP,pch=20,col=ms$C,cex=cex,cex.axis=cex.axis,las=1,xaxt="n",bty="n",xaxs="i",yaxs="i",xlim=xbnd,ylim=ybnd,xlab=xlbl,ylab=ylbl,...);
-      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black");
+      axis(side=1,at=cmat$midpf,labels=chrlabs,pos=0,las=1,cex.axis=cex.axis,col=NA,col.ticks="black",gap.axis=gap.axis);
     }
   }
 }
@@ -471,8 +489,40 @@ if (is.numeric(baseline)) { abline(h=baseline,col="black", xpd=FALSE); } # plott
 if (is.numeric(suggestiveline)) { abline(h=suggestiveline,col="blue", xpd=FALSE); if (length(suggestiveline)==1&sum(ms$logP<0)>0) { abline(h=-suggestiveline,col="blue", xpd=FALSE) }; } # plotting suggestiveline
 if (is.numeric(genomewideline)) { abline(h=genomewideline,col="red", xpd=FALSE); if (length(genomewideline)==1&sum(ms$logP<0)>0) { abline(h=-genomewideline,col="red", xpd=FALSE) }; } # plotting genomewideline
 
+# part 5: gene annotation if necessary ----------------------------------------------------------------------------------------------------------------------------------------------------------
 
-# part 5: plot highlights / annotations if necessary --------------------------------------------------------------------------------------------------------------------------------------------
+if (geneannotate) {
+  if (closestgene) {
+    gene_map <- function(pos,gc,sep) {
+      dleft=gc$start-pos;
+      dleft=pmax(dleft,0*dleft);
+      dright=pos-gc$end;
+      dright=pmax(dright,0*dright);
+      dmin=pmax(dleft,dright);
+      f=which(dmin==min(dmin));
+      if (any(f)) { return(paste0(gc$gene[f],collapse=sep)); } else { return(NA); }
+    }
+  }
+  else {
+    gene_map <- function(pos,gc,sep) { f=(gc$start<=pos)&(gc$end>=pos); if (any(f)) { return(paste0(gc$gene[f],collapse=sep)); } else { return(NA); } }
+  }
+  mg=msnp[,c("C","BPn")]; if (annotateHighlight & annotateTop) { mg=msnp2[,c("C","BPn")];}
+  colnames(mg)=c("CHR","BP");
+  mg$gene=NA;
+  
+  # make list of chromosomes that are relevant
+  unc=intersect(mg$CHR,genelist$chr);
+  
+  # main loop to annotate
+  for (i in unc) {
+    f=mg$CHR==i; mpc=mg$BP[f]; gc=genelist[genelist$chr==i,];
+    pg=lapply(mpc,gene_map,gc=gc,sep=sep);
+    mg$gene[f]=unlist(pg);
+  }
+  if (annotateHighlight & annotateTop) { msnp2$SNP=mg$gene; } else { msnp$SNP=mg$gene; }
+}
+
+# part 6: plot highlights / annotations if necessary --------------------------------------------------------------------------------------------------------------------------------------------
 
 adj=c(0,0);
 if (annotationAngle==0) { adj=c(0,0.5); }
