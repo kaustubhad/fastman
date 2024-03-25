@@ -33,8 +33,8 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
         col="matlab", maxP=14, sortchr=TRUE, bybp=FALSE, chrsubset, bprange, highlight,
         annotateHighlight=FALSE, annotatePval, colAbovePval=FALSE, col2="greys", annotateTop=TRUE,
         annotationWinMb, annotateN, annotationCol, annotationAngle=45, baseline=NULL, suggestiveline,
-        genomewideline, cex=0.4, cex.text=0.4, cex.axis=0.6, scattermoresize = c(3000,1800), xlab, ylab,
-        xlim, ylim, gap.axis=NA, ...)
+        genomewideline, cex=0.4, cex.text=0.4, cex.axis=0.6, scattermoresize = c(3000,1800), 
+        geneannotate = FALSE, build, sep="|", border=0, xlab, ylab, xlim, ylim, gap.axis=NA, ...)
 ```
 
 #### Parameters:
