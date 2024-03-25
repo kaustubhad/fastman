@@ -72,7 +72,7 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **scattermoresize** = A 2-element integer vector to specify the size of scattermore plot in pixels. Applicable only if ```scattermore = TRUE```. The user should make sure that the value of ```scattermoresize``` parameter matches the desired size of the final image output for best-quality plots. Defaults to c(3000,1800).
 * **geneannotate** = A logical value; if TRUE, the function annotates using gene names instead of SNP names. If not specified by the user, the function takes the default value FALSE.
 * **build** = A numerical value specifying the build number for matching locations to gene names. If not specified by the user, the function takes 37 as the default build.
-* **sep** = A character value specifying the separator to be used in case multiple gene name hits come up in the same annotated SNP. If not specified by the user, the function takes the default value ```'|'``.
+* **sep** = A character value specifying the separator to be used in case multiple gene name hits come up in the same annotated SNP. If not specified by the user, the function takes the default value '|'.
 * **xlab**	= A label for the x-axis, defaults to a description of x.
 * **ylab**	= A label for the y-axis, defaults to a description of y.
 * **xlim**	= The x limits of the plot. The user should refrain from changing xlim to subset x-axis by region. The better option is to specify this in the ```bprange``` argument, as changing xlim might lead to improper scaling and spacing in the plot.
