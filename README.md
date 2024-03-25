@@ -38,42 +38,45 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 ```
 
 #### Parameters:
-* **m**	= A data frame containing data for producing the manhattan plot. Has to contain a minimum of three columns: base pair position, chromosome ID, and P-value: defaults are "BP", "CHR", "P" following the Plink assoc file convention. And optionally some sort of ID, e.g. the SNP ID (default "SNP”) if annotations are needed. See explanations of the next four parameters if your column names are different, e.g. for non-model organisms you can use contid ID instead of chromosome ID.
-* **chr**	= A string denoting the column name for the chromosome. Defaults to “CHR”, which corresponds to the PLINK –assoc command output. For non-model organisms, this could be the contig ID. In case your chromosome column is actually numeric but has been converted into string during the reading of data in R, you must pay close attention to the sorting order of chromosomes. If you still want the chromosomes to be sorted in an increasing order of chromosome number then you must convert your chromosome column to numeric before using the function. If your data is already sorted then you do not need to convert the column to numeric, you can specify ```sortchr = FALSE``` in your input arguments instead.
+* **m**	= A data frame containing data for producing the Manhattan plot. Has to contain a minimum of three columns: base pair position, chromosome ID, and P-value: defaults are "BP", "CHR", and "P" following the Plink assoc file convention. And optionally some sort of ID, e.g. the SNP ID (default "SNP”) if annotations are needed. See explanations of the next four parameters if your column names are different, e.g. for non-model organisms, you can use contid ID instead of chromosome ID.
+* **chr**	= A string denoting the column name for the chromosome. Defaults to “CHR”, which corresponds to the PLINK –assoc command output. For non-model organisms, this could be the contig ID. In case your chromosome column is numeric but has been converted into string during the reading of data in R, you must pay close attention to the sorting order of chromosomes. If you still want the chromosomes to be sorted in an increasing order of chromosome number then you must convert your chromosome column to numeric before using the function. If your data is already sorted then you do not need to convert the column to numeric, you can specify ```sortchr = FALSE``` in your input arguments instead.
 * **bp** = A string denoting the column name for the chromosomal position. Defaults to “BP”, which corresponds to the PLINK –assoc command output. The column must be numeric.
-* **p**	= A string denoting the column name for the p-values or scores for the SNP association tests. Defaults to “P”, which corresponds to the PLINK –assoc command output. The column must be numeric. You can also provide alread-computed log of p-values, e.g. from published summary statistics.
+* **p**	= A string denoting the column name for the p-values or scores for the SNP association tests. Defaults to “P”, which corresponds to the PLINK –assoc command output. The column must be numeric. You can also provide an already-computed log of p-values, e.g. from published summary statistics.
 * **snp**	= A string denoting the column name for the SNP name (rs number). The column must be character.
-* **chrlabs**	= An optional character vector of length equal to the number of chromosomes, specifying the chromosome labels. e.g., you can provide ```c(1:22, "X", "Y", "MT")``` to convert the Plink numerical notation of 23=X, 24=Y, etc. This character vector is used to create the axis labels of the manhattan plot. So, you must sort the character vector in the order you want the chromosome labels to appear in the final plot. For example, if your input dataframe has chromosome numbers in a particular order you specifically want, and you have used the option ```sortchr = FALSE``` to preserve the order for your final plot, then your ```chrlabs``` vector should also have the same order of chromosomes.
+* **chrlabs**	= An optional character vector of length equal to the number of chromosomes, specifying the chromosome labels. e.g., you can provide ```c(1:22, "X", "Y", "MT")``` to convert the Plink numerical notation of 23=X, 24=Y, etc. This character vector is used to create the axis labels of the Manhattan plot. So, you must sort the character vector in the order you want the chromosome labels to appear in the final plot. For example, if your input data frame has chromosome numbers in a particular order you specifically want, and you have used the option ```sortchr = FALSE``` to preserve the order for your final plot, then your ```chrlabs``` vector should also have the same order of chromosomes.
 * **speedup** = A logical value; if TRUE, the function employs the faster method where input values at the extreme 0.2% are rounded to 3 digits, and the rest is rounded to 2 digits. The default value of this parameter is TRUE.
 * **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
 * **scattermore** = A logical value; if TRUE, uses ```scattermore``` package to speed up plot generation faster. In case the user wants to use this feature, the ``scattermore`` package needs to be installed and loaded before running the command. The default value of this parameter is FALSE.
-* **col**	= A string indicating the color scheme of the plot. Defaults to “matlab”. There are various options available for user. See below for details.
-* **maxP**	= A numeric value indicating the maximum y-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
-* **sortchr**	= A logical value; if TRUE, the table is sorted by chromosome number before plotting. If not specified by user, the function takes default value TRUE.
-* **bybp** = A logical value; if TRUE, the y-values are plotted against chromosome positions. In this case the table is not sorted by chromosome number before plotting. If not specified by user, the function takes default value FALSE. This feature is useful especially for plots where the user might be interested in studying the association p-values across contigs.
+* **col**	= A string indicating the colour scheme of the plot. Defaults to “matlab”. There are various options available for users. See below for details.
+* **maxP**	= A numeric value indicating the maximum y-value till which the user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
+* **sortchr**	= A logical value; if TRUE, the table is sorted by chromosome number before plotting. If not specified by the user, the function takes the default value TRUE.
+* **bybp** = A logical value; if TRUE, the y-values are plotted against chromosome positions. In this case, the table is not sorted by chromosome number before plotting. If not specified by the user, the function takes the default value FALSE. This feature is useful, especially for plots where the user might be interested in studying the association p-values across contigs.
 * **chrsubset** = The subset of chromosome numbers to be plotted.
 * **bprange**	= The range of chromosome positions to be plotted. In case the user wants to subset the X-axis by region, then this should be the parameter of choice, not xlim.
 * **highlight**	= A character vector of SNPs in the dataset to highlight. These SNPs should all be in the dataset.
 * **annotateHighlight**	= A logical value; if TRUE, annotates all highlighted SNPs in case more specific annotation instructions are not provided.
-* **annotatePval**	= A numeric value, if set, SNPs with p-values below this will be annotated on the plot. In case of p-value, the user can provide either the p-value or the negative logarithm of p-value as input for this argument, whichever is convenient. In case of scores, the user can provide the score cutoff directly as input. 
-* **colAbovePval**	= A logical value, if TRUE, will colour all hits above the specified p-value threshold using colour scheme chosen in col argument (default "matlab"), while the points below the threshold will be coloured using the colour scheme chosen in col2 argument below (default "greys"). Defaults to FALSE.
-* **col2** = A string indicating the color scheme of the part of the plot below the specified p-value threshold. Defaults to “greys”. There are various options available for user. See below for details.
+* **annotatePval**	= A numeric value, if set, SNPs with p-values below this will be annotated on the plot. In the case of p-value, the user can provide either the p-value or the negative logarithm of the p-value as input for this argument, whichever is convenient. In the case of scores, the user can provide the score cutoff directly as input. 
+* **colAbovePval**	= A logical value, if TRUE, will colour all hits above the specified p-value threshold using the colour scheme chosen in col argument (default "matlab"), while the points below the threshold will be coloured using the colour scheme chosen in col2 argument below (default "greys"). Defaults to FALSE.
+* **col2** = A string indicating the colour scheme of the part of the plot below the specified p-value threshold. Defaults to “greys”. There are various options available for users. See below for details.
 * **annotateTop**	= A logical value; If TRUE, only annotates the top hit on each chromosome that is below the annotatePval threshold. This is just a modifier, and it works only when used with either annotatePval, annotateHighlight or annotateN.
 * **annotationWinMb**	= A numeric value, if set, will determine the megabase window within which the top SNP will be annotated. This is just a modifier, and it works only when used with either annotatePval, annotateHighlight or annotateN.
 * **annotateN**	= A numeric value, if set, this number of top SNPs will be annotated on the plot.
-* **annotationCol** = A string indicating the color of annotation or the column name containing the colour information for the individual rows. The user can provide a column as a part of the input data frame which contains annotation colour information corresponding to each individual SNPs and specify the column name in this parameter. If the user does not want annotation for some particular SNP, NA can be provided in this column corresponding to that SNP. In case the user provides just a string indicating the annotation colour instead of a column name, then the same colour will be used for annotating all the SNPs. Defaults to grey.
-* **annotationAngle**	= The angle of annotation, defaults to 45 degree.
-* **baseline**	= The position to draw a baseline in black. Defaults to NULL, as a typical manhattan plot already has a baseline at y=0. In case the data has a left tail (e.g. two-sided scoes) the user might want to provide a baseline position for reference. In case multiple baselines are required, the user can provide a vector of positions.
+* **annotationCol** = A string indicating the colour of the annotation or the column name containing the colour information for the individual rows. The user can provide a column as a part of the input data frame which contains annotation colour information corresponding to each SNP and specify the column name in this parameter. If the user does not want annotation for some particular SNP, NA can be provided in this column corresponding to that SNP. In case the user provides just a string indicating the annotation colour instead of a column name, then the same colour will be used for annotating all the SNPs. Defaults to grey.
+* **annotationAngle**	= The angle of annotation, defaults to 45 degrees.
+* **baseline**	= The position to draw a baseline in black. Defaults to NULL, as a typical Manhattan plot already has a baseline at y=0. In case the data has a left tail (e.g. two-sided scoes) the user might want to provide a baseline position for reference. In case multiple baselines are required, the user can provide a vector of positions.
 * **suggestiveline**	= The position to draw a GWAS "suggestive significance" line. Defaults to -log10(1e-5). In case multiple suggestive lines are required, the user can provide a vector of positions.
 * **genomewideline**	= The position to draw a GWAS “genome-wide significance” line. Defaults to -log10(5e-8). In case multiple genome-wide significant lines are required, the user can provide a vector of positions.
 * **cex** = A numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.4.
 * **cex.text** = A numerical vector giving the amount by which annotation text should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.4.
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.6.
-* **scattermoresize** = A 2-element integer vector to specify the size of scattermore plot in pixels. Applicable only if ```scattermore = TRUE```. User should make sure that the value of ```scattermoresize``` parameter matches with the desired size of final image output for best quality plots. Defaults to c(3000,1800).
-* **xlab**	= A label for the x axis, defaults to a description of x.
-* **ylab**	= A label for the y axis, defaults to a description of y.
-* **xlim**	= The x limits of the plot. The user should refrain from changing xlim in order to subset x-axis by region. The better option is to specify this in the bprange arguent, as changing xlim might lead to improper scaling and spacing in the plot.
-* **ylim** = The y limits of the plot. The user should refrain from changing ylim in order to truncate y-axis. The better option is to specify the same in the maxP arguent, as changing ylim might lead to improper scaling and spacing in the plot.
+* **scattermoresize** = A 2-element integer vector to specify the size of scattermore plot in pixels. Applicable only if ```scattermore = TRUE```. The user should make sure that the value of ```scattermoresize``` parameter matches the desired size of the final image output for best-quality plots. Defaults to c(3000,1800).
+* **geneannotate** = A logical value; if TRUE, the function annotates using gene names instead of SNP names. If not specified by the user, the function takes the default value FALSE.
+* **build** = A numerical value specifying the build number for matching locations to gene names. If not specified by the user, the function takes 37 as the default build.
+* **sep** = A character value specifying the separator to be used in case multiple gene name hits come up in the same annotated SNP. If not specified by the user, the function takes the default value ```'|'``.
+* **xlab**	= A label for the x-axis, defaults to a description of x.
+* **ylab**	= A label for the y-axis, defaults to a description of y.
+* **xlim**	= The x limits of the plot. The user should refrain from changing xlim to subset x-axis by region. The better option is to specify this in the ```bprange``` argument, as changing xlim might lead to improper scaling and spacing in the plot.
+* **ylim** = The y limits of the plot. The user should refrain from changing ylim to truncate the y-axis. The better option is to specify the same in the maxP argument, as changing ylim might lead to improper scaling and spacing in the plot.
 * **gap.axis** = A numeric factor that determines the minimum gaps between axis labels; defaults to NA to use R's default settings. The default value might lead to labels of the smaller chromosomes being dropped in some cases; if so, setting gap.axis = -2 can help to display all the labels. But if the figure width is not sufficiently large, or if the chromosome/contig names are large, this can cause overlap in the text.
 
 #### Value
@@ -96,13 +99,13 @@ fastqq (p1, p2=NULL, colour, logtransform=TRUE, pairwisecompare=TRUE, speedup=TR
 * **logtransform** = A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logtransform must be stated to be FALSE, as the default value of this parameter is TRUE.
 * **pairwisecompare** = A logical value. If the two sets of p-values are provided in pairs, the user should state this argument as TRUE. Otherwise, both sets of p-values are sorted individually and then plotted against each other.
 * **speedup**	= A logical value; if TRUE, the function employs the faster method where inputs are rounded to 3 digits.
-* **lambda** = A logical value; if TRUE, the genomic inflation factor lambda is shown on the top-left corner.
-* **maxP**	= A numeric value indicating the maximum negative lograrithm of p-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
+* **lambda** = A logical value; if TRUE, the genomic inflation factor lambda is shown in the top-left corner.
+* **maxP**	= A numeric value indicating the maximum negative logarithm of the p-value till which the user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
 * **fix_zero**	= A logical value; if TRUE, zero input values are converted to half of the minimum observed input value; if FALSE, zero input values are removed.
 * **cex**	= A numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.6.
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.9.
 * **xlab** = A label for the x axis, defaults to a description of x.
-* **ylab**	= A label for the y axis, defaults to a description of y.
+* **ylab**	= A label for the y-axis, defaults to a description of y.
 
 #### Value
 * A Q-Q Plot
@@ -111,7 +114,7 @@ fastqq (p1, p2=NULL, colour, logtransform=TRUE, pairwisecompare=TRUE, speedup=TR
 ### 3. fastman_gg
 
 #### Description
-Creates a Manhattan ggplot object directly from a PLINK assoc output (or any data frame with chromosome, position, and p-value). User needs to install and load ```ggplot2``` package to use this function.
+Creates a Manhattan ggplot object directly from a PLINK assoc output (or any data frame with chromosome, position, and p-value). The user needs to install and load the ```ggplot2``` package to use this function.
 
 #### Usage
 ```
@@ -124,43 +127,43 @@ fastman_gg (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp
 ```
 
 #### Parameters:
-* **m**	= A data frame containing data for producing the manhattan plot. Has to contain a minimum of three columns: base pair position, chromosome ID, and P-value: defaults are "BP", "CHR", "P" following the Plink assoc file convention. And optionally some sort of ID, e.g. the SNP ID (default "SNP”) if annotations are needed. See explanations of the next four parameters if your column names are different, e.g. for non-model organisms you can use contid ID instead of chromosome ID.
-* **chr**	= A string denoting the column name for the chromosome. Defaults to “CHR”, which corresponds to the PLINK –assoc command output. For non-model organisms, this could be the contig ID. In case your chromosome column is actually numeric but has been converted into string during the reading of data in R, you must pay close attention to the sorting order of chromosomes. If you still want the chromosomes to be sorted in an increasing order of chromosome number then you must convert your chromosome column to numeric before using the function. If your data is already sorted then you do not need to convert the column to numeric, you can specify ```sortchr = FALSE``` in your input arguments instead.
+* **m**	= A data frame containing data for producing the Manhattan plot. Has to contain a minimum of three columns: base pair position, chromosome ID, and P-value: defaults are "BP", "CHR", "P" following the Plink assoc file convention. And optionally some sort of ID, e.g. the SNP ID (default "SNP”) if annotations are needed. See explanations of the next four parameters if your column names are different, e.g. for non-model organisms, you can use contid ID instead of chromosome ID.
+* **chr**	= A string denoting the column name for the chromosome. Defaults to “CHR”, which corresponds to the PLINK –assoc command output. For non-model organisms, this could be the contig ID. In case your chromosome column is numeric but has been converted into string during the reading of data in R, you must pay close attention to the sorting order of chromosomes. If you still want the chromosomes to be sorted in an increasing order of chromosome number then you must convert your chromosome column to numeric before using the function. If your data is already sorted then you do not need to convert the column to numeric, you can specify ```sortchr = FALSE``` in your input arguments instead.
 * **bp** = A string denoting the column name for the chromosomal position. Defaults to “BP”, which corresponds to the PLINK –assoc command output. The column must be numeric.
-* **p**	= A string denoting the column name for the p-values or scores for the SNP association tests. Defaults to “P”, which corresponds to the PLINK –assoc command output. The column must be numeric. You can also provide alread-computed log of p-values, e.g. from published summary statistics.
+* **p**	= A string denoting the column name for the p-values or scores for the SNP association tests. Defaults to “P”, which corresponds to the PLINK –assoc command output. The column must be numeric. You can also provide an already-computed log of p-values, e.g. from published summary statistics.
 * **snp**	= A string denoting the column name for the SNP name (rs number). The column must be character.
-* **chrlabs**	= An optional character vector of length equal to the number of chromosomes, specifying the chromosome labels. e.g., you can provide ```c(1:22, "X", "Y", "MT")``` to convert the Plink numerical notation of 23=X, 24=Y, etc. This character vector is used to create the axis labels of the manhattan plot. So, you must sort the character vector in the order you want the chromosome labels to appear in the final plot. For example, if your input dataframe has chromosome numbers in a particular order you specifically want, and you have used the option ```sortchr = FALSE``` to preserve the order for your final plot, then your ```chrlabs``` vector should also have the same order of chromosomes.
+* **chrlabs**	= An optional character vector of length equal to the number of chromosomes, specifying the chromosome labels. e.g., you can provide ```c(1:22, "X", "Y", "MT")``` to convert the Plink numerical notation of 23=X, 24=Y, etc. This character vector is used to create the axis labels of the Manhattan plot. So, you must sort the character vector in the order you want the chromosome labels to appear in the final plot. For example, if your input data frame has chromosome numbers in a particular order you specifically want, and you have used the option ```sortchr = FALSE``` to preserve the order for your final plot, then your ```chrlabs``` vector should also have the same order of chromosomes.
 * **speedup** = A logical value; if TRUE, the function employs the faster method where input values at the extreme 0.2% are rounded to 3 digits, and the rest is rounded to 2 digits. The default value of this parameter is TRUE.
 * **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
 * **scattermore** = A logical value; if TRUE, uses ```scattermore``` package to speed up plot generation faster. In case the user wants to use this feature, the ``scattermore`` package needs to be installed and loaded before running the command. The default value of this parameter is FALSE.
 * **repel**     = A logical value; if TRUE, uses ```ggrepel```package to repel overlapping text labels. In case the user wants to use this feature, the ```ggrepel``` package needs to be installed and loaded before running the command. The default value of this parameter is FALSE.
-* **col**	= A string indicating the color scheme of the plot. Defaults to “matlab”. There are various options available for user. See below for details.
-* **maxP**	= A numeric value indicating the maximum y-value till which user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
-* **sortchr**	= A logical value; if TRUE, the table is sorted by chromosome number before plotting. If not specified by user, the function takes default value TRUE.
-* **bybp** = A logical value; if TRUE, the y-values are plotted against chromosome positions. In this case the table is not sorted by chromosome number before plotting. If not specified by user, the function takes default value FALSE. This feature is useful especially for plots where the user might be interested in studying the association p-values across contigs.
+* **col**	= A string indicating the colour scheme of the plot. Defaults to “matlab”. There are various options available for users. See below for details.
+* **maxP**	= A numeric value indicating the maximum y-value till which the user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
+* **sortchr**	= A logical value; if TRUE, the table is sorted by chromosome number before plotting. If not specified by the user, the function takes the default value TRUE.
+* **bybp** = A logical value; if TRUE, the y-values are plotted against chromosome positions. In this case, the table is not sorted by chromosome number before plotting. If not specified by the user, the function takes the default value FALSE. This feature is useful, especially for plots where the user might be interested in studying the association p-values across contigs.
 * **chrsubset** = The subset of chromosome numbers to be plotted.
 * **bprange**	= The range of chromosome positions to be plotted. In case the user wants to subset the X-axis by region, then this should be the parameter of choice, not xlim.
 * **highlight**	= A character vector of SNPs in the dataset to highlight. These SNPs should all be in the dataset.
 * **annotateHighlight**	= A logical value; if TRUE, annotates all highlighted SNPs in case more specific annotation instructions are not provided.
-* **annotatePval**	= A numeric value, if set, SNPs with p-values below this will be annotated on the plot. In case of p-value, the user can provide either the p-value or the negative logarithm of p-value as input for this argument, whichever is convenient. In case of scores, the user can provide the score cutoff directly as input. 
-* **colAbovePval**	= A logical value, if TRUE, will colour all hits above the specified p-value threshold using colour scheme chosen in col argument (default "matlab"), while the points below the threshold will be coloured using the colour scheme chosen in col2 argument below (default "greys"). Defaults to FALSE.
-* **col2** = A string indicating the color scheme of the part of the plot below the specified p-value threshold. Defaults to “greys”. There are various options available for user. See below for details.
+* **annotatePval**	= A numeric value, if set, SNPs with p-values below this will be annotated on the plot. In the case of p-value, the user can provide either the p-value or the negative logarithm of the p-value as input for this argument, whichever is convenient. In the case of scores, the user can provide the score cutoff directly as input. 
+* **colAbovePval**	= A logical value, if TRUE, will colour all hits above the specified p-value threshold using the colour scheme chosen in col argument (default "matlab"), while the points below the threshold will be coloured using the colour scheme chosen in col2 argument below (default "greys"). Defaults to FALSE.
+* **col2** = A string indicating the colour scheme of the part of the plot below the specified p-value threshold. Defaults to “greys”. There are various options available for users. See below for details.
 * **annotateTop**	= A logical value; If TRUE, only annotates the top hit on each chromosome that is below the annotatePval threshold. This is just a modifier, and it works only when used with either annotatePval, annotateHighlight or annotateN.
 * **annotationWinMb**	= A numeric value, if set, will determine the megabase window within which the top SNP will be annotated. This is just a modifier, and it works only when used with either annotatePval, annotateHighlight or annotateN.
 * **annotateN**	= A numeric value, if set, this number of top SNPs will be annotated on the plot.
-* **annotationCol** = A string indicating the color of annotation or the column name containing the colour information for the individual rows. The user can provide a column as a part of the input data frame which contains annotation colour information corresponding to each individual SNPs and specify the column name in this parameter. If the user does not want annotation for some particular SNP, NA can be provided in this column corresponding to that SNP. In case the user provides just a string indicating the annotation colour instead of a column name, then the same colour will be used for annotating all the SNPs. Defaults to grey.
-* **annotationAngle**	= The angle of annotation, defaults to 45 degree.
-* **baseline**	= The position to draw a baseline in black. Defaults to NULL, as a typical manhattan plot already has a baseline at y=0. In case the data has a left tail (e.g. two-sided scoes) the user might want to provide a baseline position for reference. In case multiple baselines are required, the user can provide a vector of positions.
+* **annotationCol** = A string indicating the colour of the annotation or the column name containing the colour information for the individual rows. The user can provide a column as a part of the input data frame which contains annotation colour information corresponding to each SNP and specify the column name in this parameter. If the user does not want annotation for some particular SNP, NA can be provided in this column corresponding to that SNP. In case the user provides just a string indicating the annotation colour instead of a column name, then the same colour will be used for annotating all the SNPs. Defaults to grey.
+* **annotationAngle**	= The angle of annotation, defaults to 45 degrees.
+* **baseline**	= The position to draw a baseline in black. Defaults to NULL, as a typical Manhattan plot already has a baseline at y=0. In case the data has a left tail (e.g. two-sided scoes) the user might want to provide a baseline position for reference. In case multiple baselines are required, the user can provide a vector of positions.
 * **suggestiveline**	= The position to draw a GWAS "suggestive significance" line. Defaults to -log10(1e-5). In case multiple suggestive lines are required, the user can provide a vector of positions.
 * **genomewideline**	= The position to draw a GWAS “genome-wide significance” line. Defaults to -log10(5e-8). In case multiple genome-wide significant lines are required, the user can provide a vector of positions.
 * **cex** = A numerical vector giving the amount by which plotting characters and symbols should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 0.9.
 * **cex.text** = A numerical vector giving the amount by which annotation text should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 1.8.
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.6.
-* **scattermoresize** = A 2-element integer vector to specify the size of scattermore plot in pixels. Applicable only if ```scattermore = TRUE```. User should make sure that the value of ```scattermoresize``` parameter matches with the desired size of final image output for best quality plots. Defaults to c(3000,1800).
-* **xlab**	= A label for the x axis, defaults to a description of x.
-* **ylab**	= A label for the y axis, defaults to a description of y.
-* **xlim**	= The x limits of the plot. The user should refrain from changing xlim in order to subset x-axis by region. The better option is to specify this in the bprange arguent, as changing xlim might lead to improper scaling and spacing in the plot.
-* **ylim** = The y limits of the plot. The user should refrain from changing ylim in order to truncate y-axis. The better option is to specify the same in the maxP arguent, as changing ylim might lead to improper scaling and spacing in the plot.
+* **scattermoresize** = A 2-element integer vector to specify the size of the scattermore plot in pixels. Applicable only if ```scattermore = TRUE```. The user should make sure that the value of ```scattermoresize``` parameter matches with the desired size of the final image output for best-quality plots. Defaults to c(3000,1800).
+* **xlab**	= A label for the x-axis, defaults to a description of x.
+* **ylab**	= A label for the y-axis, defaults to a description of y.
+* **xlim**	= The x limits of the plot. The user should refrain from changing xlim to subset x-axis by region. The better option is to specify this in the bprange argument, as changing xlim might lead to improper scaling and spacing in the plot.
+* **ylim** = The y limits of the plot. The user should refrain from changing ylim to truncate the y-axis. The better option is to specify the same in the maxP argument, as changing ylim might lead to improper scaling and spacing in the plot.
 
 #### Value
 A ggplot object
@@ -251,7 +254,7 @@ Lets find out the run time of qqman.
 
 As seen above, fastman reduces the run time drastically.
 
-We recommend using ```CairoPNG()``` command instead of regular ```png()``` for generating the plots, as it provides high-quality image outputs. It requires the user to install and load the ```Cairo``` package beforehand. Let us generate the previous plot again using ```CairoPNG()```.
+We recommend using ```CairoPNG()``` command instead of the regular ```png()``` for generating the plots, as it provides high-quality image outputs. It requires the user to install and load the ```Cairo``` package beforehand. Let us generate the previous plot again using ```CairoPNG()```.
 ```
 CairoPNG("cmd1.png", width=10, height=6, units="in", res=300)
 fastman(m)
@@ -282,7 +285,7 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd3.png)
 
-Let us say we are interested in highlighting some particular 3876 SNPs in chromosomes 2 and 5. We have the name of the required SNPs in a character vector called snp1.
+Let us say we are interested in highlighting some particular 3876 SNPs in chromosomes 2 and 5. We have the names of the required SNPs in a character vector called snp1.
 ```
 str(snp1)
 ```
@@ -304,9 +307,9 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd7.png)
 
-Let us discuss the annotations in details. We have seven input parameters with respect to annotations: ```annotateHighlight```, ```annotatePval```, ```annotateTop```, ```annotationWinMb```, ```annotateN```, ```annotationCol``` and ```annotationAngle```. We have already discussed about ```annotateHighlight```. Among the rest, ```annotatePval``` and ```annotateN``` are annotation criteria, while the other four parameters are annotation modifiers.
+Let us discuss the annotations in detail. We have seven input parameters with respect to annotations: ```annotateHighlight```, ```annotatePval```, ```annotateTop```, ```annotationWinMb```, ```annotateN```, ```annotationCol``` and ```annotationAngle```. We have already discussed about ```annotateHighlight```. Among the rest, ```annotatePval``` and ```annotateN``` are annotation criteria, while the other four parameters are annotation modifiers.
 
-As stated above, we can annotate our plot in only two ways, either by providing a p-value threshold or by providing the required number of top SNPs. The p-value threshold can be provided using the ```annotatePval``` criterion. The user can provide either p-value or the negative logarithm as an input for this parameter, whichever is convenient. For example, both 1E-5 and 5 are acceptable input values.
+As stated above, we can annotate our plot in only two ways, either by providing a p-value threshold or by providing the required number of top SNPs. The p-value threshold can be provided using the ```annotatePval``` criterion. The user can provide either the p-value or the negative logarithm as an input for this parameter, whichever is convenient. For example, both 1E-5 and 5 are acceptable input values.
 ```
 CairoPNG("cmd5.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5)
@@ -332,7 +335,7 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd6.png)
 
-Now we move on to the next annotation modifier ```annotationWinMb```. Instead of annotating the top SNP in every chromosome, if we want to annotate the top SNP within our chosen megabase window, then this is the modifier for us. Now, lets specify a 5 megabase window.
+Now we move on to the next annotation modifier ```annotationWinMb```. Instead of annotating the top SNP in every chromosome, if we want to annotate the top SNP within our chosen megabase window, then this is the modifier for us. Now, lets specify a 5-megabase window.
 ```
 CairoPNG("cmd10.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationWinMb=5)
@@ -356,7 +359,7 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd18.png)
 
-We have the option to provide a column indicating the annotation colour intended for each SNP as a part of the input dataframe. In that case, we just need to specify the name of column in the ```annotationCol``` argument. Let us show this in the example below. In our example, we have added a separate column named ANNCOL to the input dataframe with our intended annotation colours for each SNP. Using the column we have annotated the first 4 chromosomes with green, chromosome 5-10 with red and the rest with blue as can be seen in the plot below.
+We have the option to provide a column indicating the annotation colour intended for each SNP as a part of the input data frame. In that case, we just need to specify the name of the column in the ```annotationCol``` argument. Let us show this in the example below. In our example, we have added a separate column named ANNCOL to the input data frame with our intended annotation colours for each SNP. Using the column we have annotated the first 4 chromosomes with green, chromosomes 5-10 with red and the rest with blue as can be seen in the plot below.
 ```
 CairoPNG("cmd17.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationCol="ANNCOL")
@@ -364,7 +367,7 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd17.png)
 
-In case we do not want to annotate any particular set of SNPs we can just provide NA values in the ```annotationCol``` column for those SNPs. In our example, we have another column ANNCOL2 in our input dataframe that has NA values corresponding to chromosomes 3,4,5 and 6. The rest of the values of ANNCOL are exactly same as that of the column ANNCOL. We have provided NA values in this column because we do not want to annotate SNPs in chromosomes 3,4,5 and 6. Let us see what the plot looks like when we run the command using this column for ```annoationCol``` argument.
+In case we do not want to annotate any particular set of SNPs we can just provide NA values in the ```annotationCol``` column for those SNPs. In our example, we have another column ANNCOL2 in our input dataframe that has NA values corresponding to chromosomes 3,4,5 and 6. The rest of the values of ANNCOL are the same as that of the column ANNCOL. We have provided NA values in this column because we do not want to annotate SNPs in chromosomes 3,4,5 and 6. Let us see what the plot looks like when we run the command using this column for ```annoationCol``` argument.
 ```
 CairoPNG("cmd19.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, annotationCol="ANNCOL2")
@@ -372,7 +375,7 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd19.png)
 
-We can choose to colour only the points above our specified p-value threshold. The rest of the plot will become gray by default.
+We can choose to colour only the points above our specified p-value threshold. The rest of the plot will become grey by default.
 ```
 CairoPNG("cmd12.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, colAbovePval=TRUE)
@@ -388,7 +391,7 @@ dev.off()
 ```
 ![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd13.png)
 
-As stated previously, our package also supports plotting of results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds). This is an incremental feature, as the qqman package does not support direct plotting of results from non-model organisms (Chromosome column for input dataset needs to be numeric for qqman).
+As stated previously, our package also supports plotting of results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds). This is an incremental feature, as the qqman package does not support direct plotting of results from non-model organisms (The chromosome column for the input dataset needs to be numeric for qqman).
 ```
 m=read.table("plink.assoc.fisher",header=TRUE,stringsAsFactors=FALSE,sep= '')
 ```
