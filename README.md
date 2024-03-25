@@ -123,7 +123,7 @@ fastman_gg (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp
         bprange, highlight, annotateHighlight=FALSE, annotatePval, colAbovePval=FALSE, col2="greys",
         annotateTop=TRUE, annotationWinMb, annotateN, annotationCol, annotationAngle=45, baseline=NULL,
         suggestiveline, genomewideline, cex=0.9, cex.text=1.8, cex.axis=0.6,
-        scattermoresize = c(3000,1800), xlab, ylab, xlim, ylim, ...)
+        scattermoresize = c(3000,1800), geneannotate = FALSE, build, sep="|",xlab, ylab, xlim, ylim, ...)
 ```
 
 #### Parameters:
