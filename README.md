@@ -4,18 +4,18 @@
 An **R package** for fast and efficient visualizing of GWAS results using Q-Q and Manhattan plots directly from PLINK output files.
 * **Fast**: Drastically reduces time in plot generation compared to qqman. On a typical imputed PLINK assoc file of 10 million SNPs, plotting time is reduced from 737s in qqman to 60s.
 * **Efficient**: Optimized memory management
-* **Versatile**: Can handle various inputs from p-values, logarithms of p-values to FST scores. Compatible plotting with other genome-wide population genetic parameters (e.g. FST, pi and D statistics). Allows both-sided scores, e.g. scores with negative values.
+* **Versatile**: Can handle various inputs from p-values, and logarithms of p-values to FST scores. Compatible plotting with other genome-wide population genetic parameters (e.g. F<sub>ST</sub>, π and D statistics). Allows both-sided scores, e.g. scores with negative values.
 * **Non-model friendly**: Additional support for results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds), alphabetical and other ordering options.
 * **Annotation and Highlight versatility**: Has a wide set of options to customize annotating and highlighting SNPs of interest.
-* **Familiar**: Has a very similar set of input arguments and code structure compared to qqman.
-* **Missing Value Handling**: Can handle missing values in the input dataframe.
+* **Familiar**: Has a similar set of input arguments and code structure compared to qqman.
+* **Missing Value Handling**: Can handle missing values in the input data frame.
 
 ## Installation
 If you are using Rstudio you can use the following code to install the package.
 ```
 devtools::install_github('kaustubhad/fastman',build_vignettes = TRUE)
 ```
-If you are not using Rstudio, we recommend installing the package without building the vignette.
+If you are not using Rstudio, we would recommend that you install the package without building the vignette.
 ```
 devtools::install_github('kaustubhad/fastman',build_vignettes = FALSE)
 ```
@@ -38,7 +38,7 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 ```
 
 #### Parameters:
-* **m**	= A data frame containing data for producing the Manhattan plot. Has to contain a minimum of three columns: base pair position, chromosome ID, and P-value: defaults are "BP", "CHR", and "P" following the Plink assoc file convention. And optionally some sort of ID, e.g. the SNP ID (default "SNP”) if annotations are needed. See explanations of the next four parameters if your column names are different, e.g. for non-model organisms, you can use contid ID instead of chromosome ID.
+* **m**	= A data frame containing data for producing the Manhattan plot. Has to contain a minimum of three columns: base pair position, chromosome ID, and P-value: defaults are "BP", "CHR", and "P" following the Plink assoc file convention. And optionally some sort of ID, e.g. the SNP ID (default "SNP”) if annotations are needed. See explanations of the next four parameters if your column names differ, e.g. for non-model organisms, you can use contid ID instead of chromosome ID.
 * **chr**	= A string denoting the column name for the chromosome. Defaults to “CHR”, which corresponds to the PLINK –assoc command output. For non-model organisms, this could be the contig ID. In case your chromosome column is numeric but has been converted into string during the reading of data in R, you must pay close attention to the sorting order of chromosomes. If you still want the chromosomes to be sorted in an increasing order of chromosome number then you must convert your chromosome column to numeric before using the function. If your data is already sorted then you do not need to convert the column to numeric, you can specify ```sortchr = FALSE``` in your input arguments instead.
 * **bp** = A string denoting the column name for the chromosomal position. Defaults to “BP”, which corresponds to the PLINK –assoc command output. The column must be numeric.
 * **p**	= A string denoting the column name for the p-values or scores for the SNP association tests. Defaults to “P”, which corresponds to the PLINK –assoc command output. The column must be numeric. You can also provide an already-computed log of p-values, e.g. from published summary statistics.
