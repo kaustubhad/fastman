@@ -4,7 +4,7 @@
 An **R package** for fast and efficient visualizing of GWAS results using Q-Q and Manhattan plots directly from PLINK output files.
 * **Fast**: Drastically reduces time in plot generation compared to qqman. On a typical imputed PLINK assoc file of 10 million SNPs, plotting time is reduced from 737s in qqman to 60s.
 * **Efficient**: Optimized memory management
-* **Versatile**: Can handle various inputs from p-values, and logarithms of p-values to FST scores. Compatible plotting with other genome-wide population genetic parameters (e.g. F<sub>ST</sub>, π and D statistics). Allows both-sided scores, e.g. scores with negative values.
+* **Versatile**: Can handle various inputs from p-values, and logarithms of p-values to F<sub>ST</sub> scores. Compatible plotting with other genome-wide population genetic parameters (e.g. F<sub>ST</sub>, π and D statistics). Allows both-sided scores, e.g. scores with negative values.
 * **Non-model friendly**: Additional support for results from genomes of non-model organisms (often with hundreds of contigs or many scaffolds), alphabetical and other ordering options.
 * **Annotation and Highlight versatility**: Has a wide set of options to customize annotating and highlighting SNPs of interest.
 * **Familiar**: Has a similar set of input arguments and code structure compared to qqman.
@@ -15,7 +15,7 @@ If you are using Rstudio you can use the following code to install the package.
 ```
 devtools::install_github('kaustubhad/fastman',build_vignettes = TRUE)
 ```
-If you are not using Rstudio, we would recommend that you install the package without building the vignette.
+If you are not using Rstudio, we recommend installing the package without building the vignette.
 ```
 devtools::install_github('kaustubhad/fastman',build_vignettes = FALSE)
 ```
@@ -45,7 +45,7 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **snp**	= A string denoting the column name for the SNP name (rs number). The column must be character.
 * **chrlabs**	= An optional character vector of length equal to the number of chromosomes, specifying the chromosome labels. e.g., you can provide ```c(1:22, "X", "Y", "MT")``` to convert the Plink numerical notation of 23=X, 24=Y, etc. This character vector is used to create the axis labels of the Manhattan plot. So, you must sort the character vector in the order you want the chromosome labels to appear in the final plot. For example, if your input data frame has chromosome numbers in a particular order you specifically want, and you have used the option ```sortchr = FALSE``` to preserve the order for your final plot, then your ```chrlabs``` vector should also have the same order of chromosomes.
 * **speedup** = A logical value; if TRUE, the function employs the faster method where input values at the extreme 0.2% are rounded to 3 digits, and the rest is rounded to 2 digits. The default value of this parameter is TRUE.
-* **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
+* **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use F<sub>ST</sub> score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
 * **scattermore** = A logical value; if TRUE, uses ```scattermore``` package to speed up plot generation faster. In case the user wants to use this feature, the ``scattermore`` package needs to be installed and loaded before running the command. The default value of this parameter is FALSE.
 * **col**	= A string indicating the colour scheme of the plot. Defaults to “matlab”. There are various options available for users. See below for details.
 * **maxP**	= A numeric value indicating the maximum y-value till which the user wants to visualize. The default value of this parameter is 14. If the data has negative values then both sides are truncated till the absolute value of the parameter. The user can provide NULL as input if truncation is not required.
@@ -96,7 +96,7 @@ fastqq (p1, p2=NULL, colour, logtransform=TRUE, pairwisecompare=TRUE, speedup=TR
 #### Parameters:
 * **p1**	= A numeric vector of p-values. If the user has a single set of p-values, then this is the input for that. In case the user wants to compare two sets of p-values, then this argument takes the first set of p-values as input.
 * **p2**	= A numeric vector of p-values. In case the user wants to compare two sets of p-values, this argument takes the second set of p-values as input. Otherwise, this argument defaults to NULL.
-* **logtransform** = A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logtransform must be stated to be FALSE, as the default value of this parameter is TRUE.
+* **logtransform** = A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use F<sub>ST</sub> score type data or logarithm of p-values directly, then logtransform must be stated to be FALSE, as the default value of this parameter is TRUE.
 * **pairwisecompare** = A logical value. If the two sets of p-values are provided in pairs, the user should state this argument as TRUE. Otherwise, both sets of p-values are sorted individually and then plotted against each other.
 * **speedup**	= A logical value; if TRUE, the function employs the faster method where inputs are rounded to 3 digits.
 * **lambda** = A logical value; if TRUE, the genomic inflation factor lambda is shown in the top-left corner.
@@ -134,7 +134,7 @@ fastman_gg (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp
 * **snp**	= A string denoting the column name for the SNP name (rs number). The column must be character.
 * **chrlabs**	= An optional character vector of length equal to the number of chromosomes, specifying the chromosome labels. e.g., you can provide ```c(1:22, "X", "Y", "MT")``` to convert the Plink numerical notation of 23=X, 24=Y, etc. This character vector is used to create the axis labels of the Manhattan plot. So, you must sort the character vector in the order you want the chromosome labels to appear in the final plot. For example, if your input data frame has chromosome numbers in a particular order you specifically want, and you have used the option ```sortchr = FALSE``` to preserve the order for your final plot, then your ```chrlabs``` vector should also have the same order of chromosomes.
 * **speedup** = A logical value; if TRUE, the function employs the faster method where input values at the extreme 0.2% are rounded to 3 digits, and the rest is rounded to 2 digits. The default value of this parameter is TRUE.
-* **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use FST score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
+* **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use F<sub>ST</sub> score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
 * **scattermore** = A logical value; if TRUE, uses ```scattermore``` package to speed up plot generation faster. In case the user wants to use this feature, the ``scattermore`` package needs to be installed and loaded before running the command. The default value of this parameter is FALSE.
 * **repel**     = A logical value; if TRUE, uses ```ggrepel```package to repel overlapping text labels. In case the user wants to use this feature, the ```ggrepel``` package needs to be installed and loaded before running the command. The default value of this parameter is FALSE.
 * **col**	= A string indicating the colour scheme of the plot. Defaults to “matlab”. There are various options available for users. See below for details.
@@ -160,6 +160,9 @@ fastman_gg (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp
 * **cex.text** = A numerical vector giving the amount by which annotation text should be scaled relative to the default. This works as a multiple of par("cex"). NULL and NA are equivalent to 1.0. Defaults to 1.8.
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.6.
 * **scattermoresize** = A 2-element integer vector to specify the size of the scattermore plot in pixels. Applicable only if ```scattermore = TRUE```. The user should make sure that the value of ```scattermoresize``` parameter matches with the desired size of the final image output for best-quality plots. Defaults to c(3000,1800).
+* **geneannotate** = A logical value; if TRUE, the function annotates using gene names instead of SNP names. If not specified by the user, the function takes the default value FALSE.
+* **build** = A numerical value specifying the build number for matching locations to gene names. If not specified by the user, the function takes 37 as the default build.
+* **sep** = A character value specifying the separator to be used in case multiple gene name hits come up in the same annotated SNP. If not specified by the user, the function takes the default value '|'.
 * **xlab**	= A label for the x-axis, defaults to a description of x.
 * **ylab**	= A label for the y-axis, defaults to a description of y.
 * **xlim**	= The x limits of the plot. The user should refrain from changing xlim to subset x-axis by region. The better option is to specify this in the bprange argument, as changing xlim might lead to improper scaling and spacing in the plot.
