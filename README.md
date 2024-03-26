@@ -38,12 +38,12 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 ```
 
 #### Parameters:
-* **m**	= A data frame containing data for producing the Manhattan plot. Has to contain a minimum of three columns: base pair position, chromosome ID, and P-value: defaults are "BP", "CHR", and "P" following the Plink assoc file convention. And optionally some sort of ID, e.g. the SNP ID (default "SNP”) if annotations are needed. See explanations of the next four parameters if your column names differ, e.g. for non-model organisms, you can use contid ID instead of chromosome ID.
+* **m**	= A data frame containing data for producing the Manhattan plot. Has to contain a minimum of three columns: base pair position, chromosome ID, and P-value: defaults are "BP", "CHR", and "P" following the Plink assoc file convention. And optionally some ID, e.g. the SNP ID (default "SNP”) if annotations are needed. See explanations of the next four parameters if your column names differ, e.g. for non-model organisms, you can use contid ID instead of chromosome ID.
 * **chr**	= A string denoting the column name for the chromosome. Defaults to “CHR”, which corresponds to the PLINK –assoc command output. For non-model organisms, this could be the contig ID. In case your chromosome column is numeric but has been converted into string during the reading of data in R, you must pay close attention to the sorting order of chromosomes. If you still want the chromosomes to be sorted in an increasing order of chromosome number then you must convert your chromosome column to numeric before using the function. If your data is already sorted then you do not need to convert the column to numeric, you can specify ```sortchr = FALSE``` in your input arguments instead.
 * **bp** = A string denoting the column name for the chromosomal position. Defaults to “BP”, which corresponds to the PLINK –assoc command output. The column must be numeric.
 * **p**	= A string denoting the column name for the p-values or scores for the SNP association tests. Defaults to “P”, which corresponds to the PLINK –assoc command output. The column must be numeric. You can also provide an already-computed log of p-values, e.g. from published summary statistics.
 * **snp**	= A string denoting the column name for the SNP name (rs number). The column must be character.
-* **chrlabs**	= An optional character vector of length equal to the number of chromosomes, specifying the chromosome labels. e.g., you can provide ```c(1:22, "X", "Y", "MT")``` to convert the Plink numerical notation of 23=X, 24=Y, etc. This character vector is used to create the axis labels of the Manhattan plot. So, you must sort the character vector in the order you want the chromosome labels to appear in the final plot. For example, if your input data frame has chromosome numbers in a particular order you specifically want, and you have used the option ```sortchr = FALSE``` to preserve the order for your final plot, then your ```chrlabs``` vector should also have the same order of chromosomes.
+* **chrlabs**	= An optional character vector of length equal to the number of chromosomes, specifying the chromosome labels. e.g., you can provide ```c(1:22, "X", "Y", "MT")``` to convert the Plink numerical notation of 23=X, 24=Y, etc. This character vector is used to create the axis labels of the Manhattan plot. So, you should sort the character vector in the order you want the chromosome labels to appear in the final plot. For example, if your input data frame has chromosome numbers in a particular order you specifically want, and you have used the option ```sortchr = FALSE``` to preserve the order for your final plot, then your ```chrlabs``` vector should also have the same order of chromosomes.
 * **speedup** = A logical value; if TRUE, the function employs the faster method where input values at the extreme 0.2% are rounded to 3 digits, and the rest is rounded to 2 digits. The default value of this parameter is TRUE.
 * **logp**	= A logical value; if TRUE, negative logarithms (base 10) of p-values are plotted. In case the user wants to use F<sub>ST</sub> score type data or logarithm of p-values directly, then logp must be stated to be FALSE, as the default value of this parameter is TRUE.
 * **scattermore** = A logical value; if TRUE, uses ```scattermore``` package to speed up plot generation faster. In case the user wants to use this feature, the ``scattermore`` package needs to be installed and loaded before running the command. The default value of this parameter is FALSE.
@@ -322,7 +322,16 @@ dev.off()
 
 We can see that, among the SNPs that exceed the provided threshold, only the top SNP in every chromosome is annotated. We have observed the same for ```annotateHighlight``` as well. We will come to that later, when we discuss the annotation modifiers.
 
-For now, let us explore the other annotation criterion ```annotateN```. Lets say we want to annotate the top 20 SNPs of the data.
+For now, let us try annotating with gene names instead of SNP IDs. This can be accomplished using the ```geneannotate=TRUE``` argument. We have to specify gene build for our data as well. We use the same p-value threshold as the previous plot.
+```
+CairoPNG("cmd5g.png", width=10, height=6, units="in", res=300)
+fastman(m, annotatePval=1E-5, geneannotate = TRUE, build=37)
+dev.off()
+```
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd5g.png)
+
+
+Let us explore the other annotation criterion ```annotateN```. Lets say we want to annotate the top 20 SNPs of the data.
 ```
 CairoPNG("cmd8.png", width=10, height=6, units="in", res=300)
 fastman(m, annotateN=20)
