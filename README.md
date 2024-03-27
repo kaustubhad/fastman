@@ -71,7 +71,7 @@ fastman (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = 
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.6.
 * **scattermoresize** = A 2-element integer vector to specify the size of scattermore plot in pixels. Applicable only if ```scattermore = TRUE```. The user should make sure that the value of ```scattermoresize``` parameter matches the desired size of the final image output for best-quality plots. Defaults to c(3000,1800).
 * **geneannotate** = A logical value; if TRUE, the function annotates using gene names instead of SNP names. If not specified by the user, the function takes the default value FALSE.
-* **build** = A numerical value specifying the build number for matching locations to gene names. If not specified by the user, the function takes 37 as the default build.
+* **build** = A numerical value specifying the build number for matching locations to gene names. ```build=38``` corresponds to GRCh38/b38 and Hg20, ```build=37``` corresponds to GRCh37/b37 and Hg19, and ```build=36``` corresponds to GRCh36/b36 and Hg18.
 * **sep** = A character value specifying the separator to be used in case multiple gene name hits come up in the same annotated SNP. If not specified by the user, the function takes the default value '|'.
 * **xlab**	= A label for the x-axis, defaults to a description of x.
 * **ylab**	= A label for the y-axis, defaults to a description of y.
@@ -161,7 +161,7 @@ fastman_gg (m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp
 * **cex.axis**	= The magnification to be used for axis annotation relative to the current setting of cex. Defaults to 0.6.
 * **scattermoresize** = A 2-element integer vector to specify the size of the scattermore plot in pixels. Applicable only if ```scattermore = TRUE```. The user should make sure that the value of ```scattermoresize``` parameter matches with the desired size of the final image output for best-quality plots. Defaults to c(3000,1800).
 * **geneannotate** = A logical value; if TRUE, the function annotates using gene names instead of SNP names. If not specified by the user, the function takes the default value FALSE.
-* **build** = A numerical value specifying the build number for matching locations to gene names. If not specified by the user, the function takes 37 as the default build.
+* **build** = A numerical value specifying the build number for matching locations to gene names. ```build=38``` corresponds to GRCh38/b38 and Hg20, ```build=37``` corresponds to GRCh37/b37 and Hg19, and ```build=36``` corresponds to GRCh36/b36 and Hg18.
 * **sep** = A character value specifying the separator to be used in case multiple gene name hits come up in the same annotated SNP. If not specified by the user, the function takes the default value '|'.
 * **xlab**	= A label for the x-axis, defaults to a description of x.
 * **ylab**	= A label for the y-axis, defaults to a description of y.
