@@ -328,7 +328,7 @@ CairoPNG("cmd5g.png", width=10, height=6, units="in", res=300)
 fastman(m, annotatePval=1E-5, geneannotate = TRUE, build=37)
 dev.off()
 ```
-
+![](https://github.com/kaustubhad/fastman/blob/main/plots/cmd5g.png)
 
 
 Let us explore the other annotation criterion ```annotateN```. Lets say we want to annotate the top 20 SNPs of the data.
