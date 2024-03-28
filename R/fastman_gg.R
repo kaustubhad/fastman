@@ -1,6 +1,7 @@
 fastman_gg <- function(m, chr = "CHR", bp = "BP", p = "P", snp, chrlabs, speedup=TRUE, logp = TRUE, scattermore = FALSE, repel = FALSE, col="matlab", maxP=14, sortchr=TRUE, bybp=FALSE, chrsubset, bprange,
                            highlight, annotateHighlight=FALSE, annotatePval, colAbovePval=FALSE, col2="greys", annotateTop=TRUE, annotationWinMb, annotateN, annotationCol, annotationAngle=45, 
-                           baseline=NULL, suggestiveline, genomewideline, cex=0.9, cex.text=1.8, cex.axis=0.6, scattermoresize = c(3000,1800), xlab, ylab, xlim, ylim, ...) {
+                           baseline=NULL, suggestiveline, genomewideline, cex=0.9, cex.text=1.8, cex.axis=0.6, scattermoresize = c(3000,1800), geneannotate = FALSE, closestgene = TRUE, 
+						   build, sep="|", border=0, xlab, ylab, xlim, ylim, ...) {
 
 # use: source("fastman.R");
 # example: tic(); fastman(m); toc();
@@ -58,6 +59,22 @@ zerocount <- 5
 
 if (scattermore){ # check whether scattermore package is installed
   if (!require('scattermore')){return()}
+}
+
+if (geneannotate){ # read genelist from provided build
+  if (is.numeric(build)) { build <- ifelse(build > 30, build - 18, build); genelist_name <- paste("hg", build, sep = ""); } # if numeric build input then create genelist_name from build number
+  else { genelist_name <- build; } # if alphanumeric build input then build input is taken as genelist name
+  
+  if (!exists(genelist_name)) {
+    stop("Invalid build") # check whether genelist name exists
+  }
+  genelist <- get(genelist_name)
+  
+  colnames(genelist)=c("chr","start","end","gene"); # select columns and prepare data
+
+  # adjust boundary of genes if necessary
+  genelist$start=genelist$start-border;
+  genelist$end=genelist$end+border;
 }
 
 if (repel){ # check whether ggrepel package is installed
@@ -138,6 +155,8 @@ if (bybp) { sortchr=FALSE; }
 if (sortchr) { f=order(m$CHR); m=m[f,]; } # chromosome numbers might not be ordered in the file, so sort by chr first # memory 44.0
 # if (bybp) { f=order(m$BP); m=m[f,]; } # sort by bp. is not necessary for plotting, but for nice colors
 
+if (geneannotate) { m$BPo=m$BP } # retain original BP for gene mapping
+
 m$BP=as.double(m$BP)/1E6; # convert to MB position
 
 if (logp) { m$logP=-log10(m$P); } else { m$logP=m$P; } # if log transformation is required then log base 10 of p-values is calculated, else the given column is passed as logP
@@ -197,7 +216,7 @@ for (i in 1:numc) {
 
 # part 2 B: annotations -----------------------------------
 if (showsnp) { # pick selected snps, using either of 3 flags
-  m=m[,c("C","BPn","logP","SNP","annotationCol")];
+  if (geneannotate) { m=m[,c("C","BPn","logP","SNP","annotationCol","BPo")]; } else { m=m[,c("C","BPn","logP","SNP","annotationCol")]; }
   if (!missing(highlight)) { # highlight listed snps
     f=(m$SNP %in% highlight); msnp=m[f,,drop=F]; # msnp will contain the SNP information for annotation, in this case msnp contains information of only SNPs to be highlighted
 	if (annotateHighlight&annotateTop) { # annotate the top highlighted SNP per chromosome
@@ -212,16 +231,15 @@ if (showsnp) { # pick selected snps, using either of 3 flags
   }
   else if (!missing(annotateN)) { # highlight top N snps
     if (!missing(annotationWinMb)) { # within each chr, only one snp within annotationWinMb window. annotationWinMb value adjusted by factor above
-	  m0=NULL; sunc=unique(msnp$C);
-	  for (i in sunc) { # loop over chr
-	    m2=msnp[msnp$C==i,]; f=order(m2$logP,decreasing=TRUE); m2=m2[f,]; m1=m2[1,,drop=F];
-		if (nrow(m2)>1) { for (j in 2:nrow(m2)) { f=abs(m1$BPn-m2$BPn[j]); if (min(f)>annotationWinMb) { m1=rbind(m1,m2[j,,drop=F]); } } }
-		m0=rbind(m0,m1); # identify top SNP within annotationWinMb window for each chr
+	  m0=m; m2=NULL;
+	  for (i in 1:annotateN) { # loop annotateN number of times
+	    if (nrow(m0)==1) {m2=rbind(m2,m0); break}
+		f=(m0$logP==max(m0$logP)); m1=m0[f,];
+		m1=m1[1,,drop=F];
+		f=(abs(m0$BPn-m1$BPn)>annotationWinMb); m0=m0[f,]; 
+		m2=rbind(m2,m1); rm(m1);
 	  }
-	  msnp=m0; # store information of only the top SNP within annotationWinMb window for each chr
-	  rm(m0,m1,m2);
-	  k=nrow(msnp)-annotateN+1; k=sort(msnp$logP,partial=k)[k]; # sorting the p-value column to identify the k-th highest value
-	  f=(msnp$logP>=k); msnp=msnp[f,,drop=F]; # msnp will contain the SNP information for annotation, in this case msnp contains information of top N SNPs
+	  msnp=m2; rm(m0,m2); # msnp will contain the SNP information for annotation, in this case msnp contains information of top N SNPs
     }
 	else { # only highlight top N snps
 	  k=nrow(m)-annotateN+1; k=sort(m$logP,partial=k)[k]; # sorting the p-value column to identify the k-th highest value
@@ -408,7 +426,7 @@ if (!missing(ylim)) { ybnd=ylim; }
 xlbl="Chromosome";
 if (numc==1) { xlbl=paste(xlbl,unc[1],"(Mb)",sep=" "); } # if single chromosome, add chromosome number to X label
 if (bybp&numc>1) { xlbl="Position (Mb)"; }
-if (logp) { ylbl=expression(-log[10](italic(p))); } else { ylbl=p; } # adapt Y label to whether log transformed or not
+if (logp) { ylbl=bquote(-log[10]~(.(p))); } else { ylbl=p; } # adapt Y label to whether log transformed or not
 if (!missing(xlab)) { xlbl=xlab; }
 if (!missing(ylab)) { ylbl=ylab; }
 
@@ -576,7 +594,40 @@ if (is.numeric(baseline)) { p <- p + geom_hline(yintercept = baseline, color = "
 if (is.numeric(suggestiveline)) { p <- p + geom_hline(yintercept = suggestiveline, color = "blue"); if (length(suggestiveline)==1&sum(ms$logP<0)>0) { p <- p + geom_hline(yintercept = -suggestiveline, color = "blue") }; } # plotting suggestiveline
 if (is.numeric(genomewideline)) { p <- p + geom_hline(yintercept = genomewideline, color = "red"); if (length(genomewideline)==1&sum(ms$logP<0)>0) { p <- p + geom_hline(yintercept = -genomewideline, color = "red") }; } # plotting genomewideline
 
-# part 5: plot highlights / annotations if necessary --------------------------------------------------------------------------------------------------------------------------------------------
+# part 5: gene annotation if necessary ----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+if (geneannotate) {
+  if (closestgene) {
+    gene_map <- function(pos,gc,sep) {
+      dleft=gc$start-pos;
+      dleft=pmax(dleft,0*dleft);
+      dright=pos-gc$end;
+      dright=pmax(dright,0*dright);
+      dmin=pmax(dleft,dright);
+      f=which(dmin==min(dmin));
+      if (any(f)) { return(paste0(gc$gene[f],collapse=sep)); } else { return(NA); }
+    }
+  }
+  else {
+    gene_map <- function(pos,gc,sep) { f=(gc$start<=pos)&(gc$end>=pos); if (any(f)) { return(paste0(gc$gene[f],collapse=sep)); } else { return(NA); } }
+  }
+  mg=msnp[,c("C","BPo")]; if (annotateHighlight & annotateTop) { mg=msnp2[,c("C","BPo")];}
+  colnames(mg)=c("CHR","BP");
+  mg$gene=NA;
+  
+  # make list of chromosomes that are relevant
+  unc=intersect(mg$CHR,genelist$chr);
+  
+  # main loop to annotate
+  for (i in unc) {
+    f=mg$CHR==i; mpc=mg$BP[f]; gc=genelist[genelist$chr==i,];
+    pg=lapply(mpc,gene_map,gc=gc,sep=sep);
+    mg$gene[f]=unlist(pg);
+  }
+  if (annotateHighlight & annotateTop) { msnp2$SNP=mg$gene; } else { msnp$SNP=mg$gene; }
+}
+
+# part 6: plot highlights / annotations if necessary --------------------------------------------------------------------------------------------------------------------------------------------
 
 adj=c(0,0);
 if (annotationAngle==0) { adj=c(0,0.5); }
@@ -616,7 +667,7 @@ if (!missing(highlight)) {
     } else {
       m2 <- msnp
       if (repel){
-        p <- p + geom_text_repel(data = m2, aes(x = BPn, y = logP, label = SNP), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+        p <- p + geom_text_repel(data = m2, aes(x = BPn, y = logP, label = SNP, angle = annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
       }
       else {
         p <- p + geom_text(data = m2, aes(x = BPn+fac/7, y = logP+facy/7, label = SNP, angle = annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
@@ -627,7 +678,7 @@ if (!missing(highlight)) {
 
 if (!missing(annotateN)) {
   if (repel){
-    p <- p + geom_text_repel(data = msnp, aes(x = BPn, y = logP, label = SNP), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = msnp$annotationCol)
+    p <- p + geom_text_repel(data = msnp, aes(x = BPn, y = logP, label = SNP, angle = annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = msnp$annotationCol)
   }
   else {
     p <- p + geom_text(data = msnp, aes(x = BPn+fac/7, y = logP+facy/7, label = SNP, angle = annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = msnp$annotationCol)
@@ -638,7 +689,7 @@ if (!missing(annotatePval) & (zerocount > 0)) {
   f <- msnp$logP > 0
   m2 <- msnp[f,]
   if (repel){
-    p <- p + geom_text_repel(data = m2, aes(x = BPn, y = logP, label = SNP), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+    p <- p + geom_text_repel(data = m2, aes(x = BPn, y = logP, label = SNP, angle = annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
   }
   else {
     p <- p + geom_text(data = m2, aes(x = BPn+fac/7, y = logP+facy/7, label = SNP, angle = annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
@@ -648,7 +699,7 @@ if (!missing(annotatePval) & (zerocount > 0)) {
     f <- msnp$logP < 0
     m2 <- msnp[f,]
     if (repel){
-      p <- p + geom_text_repel(data = m2, aes(x = BPn, y = logP, label = SNP), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
+      p <- p + geom_text_repel(data = m2, aes(x = BPn, y = logP, label = SNP, angle = annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)
     }
     else {
       p <- p + geom_text(data = m2, aes(x = BPn+fac/7, y = logP+facy/7, label = SNP, angle = -annotationAngle), hjust = 0, vjust = 1, size = cex.text, inherit.aes = FALSE, color = m2$annotationCol)

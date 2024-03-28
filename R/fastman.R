@@ -151,6 +151,8 @@ if (bybp) { sortchr=FALSE; }
 if (sortchr) { f=order(m$CHR); m=m[f,]; } # chromosome numbers might not be ordered in the file, so sort by chr first # memory 44.0
 # if (bybp) { f=order(m$BP); m=m[f,]; } # sort by bp. is not necessary for plotting, but for nice colors
 
+if (geneannotate) { m$BPo=m$BP } # retain original BP for gene mapping
+
 m$BP=as.double(m$BP)/1E6; # convert to MB position
 
 if (logp) { m$logP=-log10(m$P); } else { m$logP=m$P; } # if log transformation is required then log base 10 of p-values is calculated, else the given column is passed as logP
@@ -210,7 +212,7 @@ for (i in 1:numc) {
 
 # part 2 B: annotations -----------------------------------
 if (showsnp) { # pick selected snps, using either of 3 flags
-  m=m[,c("C","BPn","logP","SNP","annotationCol")];
+  if (geneannotate) { m=m[,c("C","BPn","logP","SNP","annotationCol","BPo")]; } else { m=m[,c("C","BPn","logP","SNP","annotationCol")]; }
   if (!missing(highlight)) { # highlight listed snps
     f=(m$SNP %in% highlight); msnp=m[f,,drop=F]; # msnp will contain the SNP information for annotation, in this case msnp contains information of only SNPs to be highlighted
 	if (annotateHighlight&annotateTop) { # annotate the top highlighted SNP per chromosome
@@ -225,16 +227,15 @@ if (showsnp) { # pick selected snps, using either of 3 flags
   }
   else if (!missing(annotateN)) { # highlight top N snps
     if (!missing(annotationWinMb)) { # within each chr, only one snp within annotationWinMb window. annotationWinMb value adjusted by factor above
-	  m0=NULL; sunc=unique(msnp$C);
-	  for (i in sunc) { # loop over chr
-	    m2=msnp[msnp$C==i,]; f=order(m2$logP,decreasing=TRUE); m2=m2[f,]; m1=m2[1,,drop=F];
-		if (nrow(m2)>1) { for (j in 2:nrow(m2)) { f=abs(m1$BPn-m2$BPn[j]); if (min(f)>annotationWinMb) { m1=rbind(m1,m2[j,,drop=F]); } } }
-		m0=rbind(m0,m1); # identify top SNP within annotationWinMb window for each chr
+	  m0=m; m2=NULL;
+	  for (i in 1:annotateN) { # loop annotateN number of times
+	    if (nrow(m0)==1) {m2=rbind(m2,m0); break}
+		f=(m0$logP==max(m0$logP)); m1=m0[f,];
+		m1=m1[1,,drop=F];
+		f=(abs(m0$BPn-m1$BPn)>annotationWinMb); m0=m0[f,]; 
+		m2=rbind(m2,m1); rm(m1);
 	  }
-	  msnp=m0; # store information of only the top SNP within annotationWinMb window for each chr
-	  rm(m0,m1,m2);
-	  k=nrow(msnp)-annotateN+1; k=sort(msnp$logP,partial=k)[k]; # sorting the p-value column to identify the k-th highest value
-	  f=(msnp$logP>=k); msnp=msnp[f,,drop=F]; # msnp will contain the SNP information for annotation, in this case msnp contains information of top N SNPs
+	  msnp=m2; rm(m0,m2); # msnp will contain the SNP information for annotation, in this case msnp contains information of top N SNPs
     }
 	else { # only highlight top N snps
 	  k=nrow(m)-annotateN+1; k=sort(m$logP,partial=k)[k]; # sorting the p-value column to identify the k-th highest value
@@ -419,7 +420,7 @@ if (!missing(ylim)) { ybnd=ylim; }
 xlbl="Chromosome";
 if (numc==1) { xlbl=paste(xlbl,unc[1],"(Mb)",sep=" "); } # if single chromosome, add chromosome number to X label
 if (bybp&numc>1) { xlbl="Position (Mb)"; }
-if (logp) { ylbl=expression(-log[10](italic(p))); } else { ylbl=p; } # adapt Y label to whether log transformed or not
+if (logp) { ylbl=bquote(-log[10]~(.(p))); } else { ylbl=p; } # adapt Y label to whether log transformed or not
 if (!missing(xlab)) { xlbl=xlab; }
 if (!missing(ylab)) { ylbl=ylab; }
 
@@ -506,7 +507,7 @@ if (geneannotate) {
   else {
     gene_map <- function(pos,gc,sep) { f=(gc$start<=pos)&(gc$end>=pos); if (any(f)) { return(paste0(gc$gene[f],collapse=sep)); } else { return(NA); } }
   }
-  mg=msnp[,c("C","BPn")]; if (annotateHighlight & annotateTop) { mg=msnp2[,c("C","BPn")];}
+  mg=msnp[,c("C","BPo")]; if (annotateHighlight & annotateTop) { mg=msnp2[,c("C","BPo")];}
   colnames(mg)=c("CHR","BP");
   mg$gene=NA;
   
