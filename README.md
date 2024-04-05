@@ -9,13 +9,14 @@ An **R package** for fast and efficient visualizing of GWAS results using Q-Q an
 * **Annotation and Highlight versatility**: Has a wide set of options to customize annotating and highlighting SNPs of interest.
 * **Familiar**: Has a similar set of input arguments and code structure compared to qqman.
 * **Missing Value Handling**: Can handle missing values in the input data frame.
+* **Gene Annotation Capability**: Can annotate with gene names instead of SNP names if the user prefers. Currently, the package provides in-built support for human builds GRCh36, 37 and 38, but other builds, e.g., for non-model organisms, can also be provided as input by the user.
 
 ## Installation
 If you are using Rstudio you can use the following code to install the package.
 ```
 devtools::install_github('kaustubhad/fastman',build_vignettes = TRUE)
 ```
-If you are not using Rstudio, we recommend installing the package without building the vignette.
+If you are not using Rstudio, we would recommend that you install the package without building the vignette.
 ```
 devtools::install_github('kaustubhad/fastman',build_vignettes = FALSE)
 ```
