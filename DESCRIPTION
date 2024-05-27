@@ -25,3 +25,4 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 RoxygenNote: 7.2.3
+License: GPL (>= 3)
