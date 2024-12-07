@@ -509,7 +509,7 @@ if (geneannotate) {
   }
   mg=msnp[,c("C","BPo")]; if (annotateHighlight & annotateTop) { mg=msnp2[,c("C","BPo")];}
   colnames(mg)=c("CHR","BP");
-  mg$gene=NA;
+  if (nrow(mg)>0) {mg$gene=NA; }
   
   # make list of chromosomes that are relevant
   unc=intersect(mg$CHR,genelist$chr);
